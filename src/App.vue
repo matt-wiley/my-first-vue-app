@@ -3,14 +3,9 @@ import HelloWorld from "./components/HelloWorld.vue";
 </script>
 
 <template>
-  <div id="app">
-    <header>
-      <nav>
-        <router-link to="/">Home</router-link>
-      </nav>
-    </header>
-
-    <router-view />
+  <div id="app" class="flex flex-row vh-100">
+    <div class="w-20 bg-red">&nbsp;</div>
+    <div class="w-80 bg-silver">&nbsp;</div>
   </div>
 </template>
 

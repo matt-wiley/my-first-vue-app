@@ -1,48 +1,49 @@
-import { ArticlesService, Article } from "./articles-service";
-import { SourcesService, Source } from "./sources-service"; 
+import type { Article } from "@/interfaces/article";
+import type { DataServiceInterface } from "@/interfaces/data-service";
+import type { Source } from "@/interfaces/source";
+import { ArticlesService } from "./articles-service";
+import { SourcesService } from "./sources-service";
 
+export default class DataService  implements DataServiceInterface {
+  private static instance: DataService;
 
-export default class DataService {
+  private articlesService: ArticlesService;
+  private sourcesService: SourcesService;
 
-    private static instance: DataService;
+  private constructor() {
+    this.articlesService = new ArticlesService();
+    this.sourcesService = new SourcesService();
+  }
 
-    private articlesService: ArticlesService;
-    private sourcesService: SourcesService;
-
-    private constructor() {
-        this.articlesService = new ArticlesService();
-        this.sourcesService = new SourcesService();
+  static getInstance(): DataService {
+    if (!DataService.instance) {
+      DataService.instance = new DataService();
     }
+    return DataService.instance;
+  }
 
-    static getInstance(): DataService {
-        if (!DataService.instance) {
-            DataService.instance = new DataService();
-        }
-        return DataService.instance;
-    }
+  // Article methods
 
-    // Article methods
+  addArticle(article: Article): void {
+    this.articlesService.addArticle(article);
+  }
 
-    addArticle(article: Article) {
-        this.articlesService.addArticle(article);
-    }
+  getArticles(): Array<Article> {
+    return this.articlesService.getArticles();
+  }
 
-    getArticles(): Array<Article> {
-        return this.articlesService.getArticles();
-    }
+  getArticlesBySourceId(sourceId: string): Array<Article> {
+    return this.articlesService.getArticlesBySourceId(sourceId);
+  }
 
-    getArticlesBySourceId(sourceId: string): Array<Article> {
-        return this.articlesService.getArticlesBySourceId(sourceId);
-    }
+  // Source methods
 
-    // Source methods
+  addSource(source: Source): void {
+    this.sourcesService.addSource(source);
+  }
 
-    addSource(source: Source) {
-        this.sourcesService.addSource(source);
-    }
-
-    getSources(): Array<Source> {
-        return this.sourcesService.getSources();
-    }
+  getSources(): Array<Source> {
+    return this.sourcesService.getSources();
+  }
 
 }

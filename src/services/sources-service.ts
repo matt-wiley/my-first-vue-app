@@ -1,11 +1,8 @@
-export interface Source {
-    id: string;
-    title: string;
-    url: string;
-    description: string;
-}
+import type { Source } from "@/interfaces/source";
+import type { SourcesServiceInterface } from "@/interfaces/sources-service";
 
-export class SourcesService {
+
+export class SourcesService implements SourcesServiceInterface {
 
     private sources: Array<Source>;
 

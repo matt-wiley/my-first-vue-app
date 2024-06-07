@@ -5,6 +5,9 @@ import App from "./App.vue";
 import router from "./router";
 
 import "./assets/main.css";
+import { SampleDataService } from "./services/sample-data-service";
+
+SampleDataService.getInstance();
 
 Vue.use(PiniaVuePlugin);
 

@@ -1,14 +1,7 @@
+import type { Article } from "@/interfaces/article";
+import type { ArticlesServiceInterface } from "@/interfaces/articles-service";
 
-export interface Article {
-    sha256: string;
-    sourceId: string;
-    author: string;
-    link: string;
-    title: string;
-    content: string;
-}
-
-export class ArticlesService {
+export class ArticlesService implements ArticlesServiceInterface {
 
     private articles: Array<Article>;
 

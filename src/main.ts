@@ -7,7 +7,12 @@ import router from "./router";
 import "./assets/main.css";
 import { SampleDataService } from "./services/sample-data-service";
 
-SampleDataService.getInstance();
+(() => {
+  const dataService = SampleDataService.getInstance();
+  console.log(`sources = ${dataService.getSources().length}`);
+  console.log(`articles = ${dataService.getArticles().length}`);
+})();
+
 
 Vue.use(PiniaVuePlugin);
 

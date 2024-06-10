@@ -5,8 +5,6 @@ defineProps<{
   sources: Source[];
 }>();
 
-
-
 </script>
 
 <template>

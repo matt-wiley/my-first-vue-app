@@ -1,0 +1,70 @@
+/* "named" color variables */
+:root {
+    --blue-primary: rgb(26, 160, 206);
+    --blue-lowlight: rgb(35, 113, 141);
+    --blue-highlight: rgb(52, 176, 205);
+
+    --green-primary: rgb(127, 202, 153);
+
+    --orange-primary: rgb(251, 194, 108);
+
+    --lightgray-primary: rgb(204, 204, 204);
+    --gray-primary: rgb(128, 128, 128);
+    --darkgray-primary: rgb(102, 102, 102);
+
+    --white-primary: rgb(255, 255, 255);
+    --darkwhite-primary: rgb(235, 235, 235);
+}
+
+
+/* semantic color variables for this project */
+:root {
+    --primary-color: var(--blue-primary);
+    --accent-color: var(--orange-primary);
+    --primary-text-color: var(--white-primary);
+    --secondary-text-color: var(--darkgray-primary);
+
+    --sources-list-bg-color: var(--blue-primary);
+    --sources-list-text-color: var(--primary-text-color);
+    --sources-list-item-bg-selected: var(--blue-lowlight);
+    --sources-list-item-bg-hover: var(--blue-highlight);
+
+    --articles-list-bg-color: var(--white-primary);
+    --articles-list-text-color-primary: var(--blue-lowlight);
+    --articles-list-text-color-secondary: var(--gray-primary);
+    --articles-list-bg-selected: var(--orange-primary);
+    --articles-list-bg-unread: var(--green-primary);
+    --articles-list-bg-read: var(--lightgray-primary);
+
+    --content-area-bg-color: var(--darkwhite-primary);
+
+    --content-page-text-color: var(--secondary-text-color);
+    --content-page-bg-color: var(--white-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: var(--blue-primary);
+        --accent-color: var(--orange-primary);
+        --primary-text-color: var(--white-primary);
+        --secondary-text-color: var(--darkgray-primary);
+    
+        --sources-list-bg-color: var(--blue-primary);
+        --sources-list-text-color: var(--primary-text-color);
+        --sources-list-item-bg-selected: var(--blue-lowlight);
+        --sources-list-item-bg-hover: var(--blue-highlight);
+    
+        --articles-list-bg-color: var(--white-primary);
+        --articles-list-text-color-primary: var(--blue-lowlight);
+        --articles-list-text-color-secondary: var(--gray-primary);
+        --articles-list-bg-selected: var(--orange-primary);
+        --articles-list-bg-unread: var(--green-primary);
+        --articles-list-bg-read: var(--lightgray-primary);
+    
+        --content-area-bg-color: var(--darkwhite-primary);
+    
+        --content-page-text-color: var(--secondary-text-color);
+        --content-page-bg-color: var(--white-primary);
+    }
+}
+

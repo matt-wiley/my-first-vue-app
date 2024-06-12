@@ -8,13 +8,13 @@ import Sidebar from './components/Sidebar.vue'
             <h1 class="tc">RSS READER</h1>
         </header>
         <div id="ui-columns" class="flex flex-row vh-100">
-            <div class="scoped-far-west-column-style pa3">
+            <div class="scoped-far-west-column-style pa2 w-20">
                 <Sidebar />
             </div>
-            <div class="scoped-west-column-style pa3">
+            <div class="scoped-west-column-style pa3 w-20">
                 <h1>Articles</h1>
             </div>
-            <main class="scoped-main-column-style pa3 w-100 justify-start items-stretch">
+            <main class="scoped-main-column-style pa3 w-60 justify-start items-stretch">
                 <router-view />
             </main>
         </div>
@@ -25,8 +25,6 @@ import Sidebar from './components/Sidebar.vue'
 .scoped-header-style {
     background-color: var(--primary-color);
     color: var(--primary-text-color);
-    resize: horizontal;
-    overflow: hidden;
 }
 
 .scoped-far-west-column-style {

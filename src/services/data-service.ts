@@ -3,12 +3,14 @@ import type { DataServiceInterface } from "@/interfaces/data-service";
 import type { Source } from "@/interfaces/source";
 import { ArticlesService } from "./articles-service";
 import { SourcesService } from "./sources-service";
+import type { ArticlesServiceInterface } from "@/interfaces/articles-service";
+import type { SourcesServiceInterface } from "@/interfaces/sources-service";
 
 export default class DataService  implements DataServiceInterface {
   private static instance: DataService;
 
-  private articlesService: ArticlesService;
-  private sourcesService: SourcesService;
+  private articlesService: ArticlesServiceInterface;
+  private sourcesService: SourcesServiceInterface;
 
   private constructor() {
     this.articlesService = new ArticlesService();

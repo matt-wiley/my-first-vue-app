@@ -10,7 +10,6 @@ const dataService = SampleDataService.getInstance();
 
 <template>
   <div id="sidebar" class="">
-    <h1>Sidebar</h1>
     <SourcesList v-bind:sources=dataService.getSources() />
   </div>
 </template>

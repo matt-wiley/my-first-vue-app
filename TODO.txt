@@ -2,13 +2,47 @@
 
 
 [ ] Complete the Source Column Components 
-    [ ] Implement Add Source 
-    [ ] Implement Remove Source 
-    [ ] Implement Edit Source 
+    [ ] Implement Source List actions 
+        [ ] Add source 
+        [ ] Delete Source 
+        [ ] Edit Source 
+            [ ] Rename source
 
 
 [ ] Complete the Articles Column Components 
-    [ ] 
+    [ ] Implement Article List actions
+        - Filters:
+            - Unread only
+            - Read only
+            - Time-based ??
+    [ ] Structure and style article card
+    [ ] Implement card functionality
+        [x] On click: Display article in main view
+        [ ] On right click: Show context menu of article actions
+        - Article state
+            - Freshness: State of article after source update; not necessarily relevant to user
+                - "new" = article not seen before and was just added to datastore
+                - "up-to-date" = article was seen in a previous source update
+                - "stale" = article is in datastore, but is no longer seen in source update
+            - Read/Unread
+        
+        - Article actions
+            - Add to reading list
+            - Mark article read
+            - Mark article unread
+            - Delete article
+                - if Freshness == "new" or "up-to-date" => soft delete in datastore to prevent reappearance
+                - if Freshness == "stale" => hard delete from datastore
+
+            
+
+
+[ ] Create Settings view
+    [ ] Persist settings to local storage
+    - Available settings:
+        - Max stale to keep
+        - Max age to keep
+        - Update settings ??
 
     
 TODO: Fill out the TODO.txt file

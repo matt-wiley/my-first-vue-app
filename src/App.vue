@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import Sidebar from './components/Sidebar.vue'
+import { useUIStateStore } from "./stores/ui";
+
+(() => {
+    // Setup the global stores
+    const uiState = useUIStateStore();
+
+    // @ts-ignore
+    window.stores = { uiState };
+})();
+
+
 </script>
 
 <template>

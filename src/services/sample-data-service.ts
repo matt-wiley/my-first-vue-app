@@ -6,7 +6,7 @@ import DataService from "./data-service";
 
 
 export class SampleDataService implements DataServiceInterface {
-    
+
     // Sample data singleton
     private static instance: SampleDataService;
     private static MAX_DIMENSION = 10;
@@ -48,7 +48,8 @@ export class SampleDataService implements DataServiceInterface {
                     title: `Article ${j}`,
                     author: `Author ${j}`,
                     link: `https://www.example.com/article_${i}_${j}`,
-                    content: `Contnet for article ${j}`
+                    content: `Contnet for article ${j}`,
+                    publishedDate: this.randomDate(new Date(2021, 0, 1), new Date())
                 };
                 this.addArticle(article);
             }
@@ -62,7 +63,7 @@ export class SampleDataService implements DataServiceInterface {
         this.dataService.addArticle(article);
     }
 
-    getArticles(): Array<Article>{
+    getArticles(): Array<Article> {
         return this.dataService.getArticles();
     }
 
@@ -80,4 +81,14 @@ export class SampleDataService implements DataServiceInterface {
         return this.dataService.getSources();
     }
 
+
+    // Private methods
+
+    private randomDate(start: Date, end: Date, startHour = 0, endHour = 24) {
+        const dateDifference = end.getTime() - start.getTime();
+        var date = new Date(start.getTime() + Math.random() * dateDifference);
+        var hour = startHour + Math.random() * (endHour - startHour) | 0;
+        date.setHours(hour);
+        return date;
+    }
 }

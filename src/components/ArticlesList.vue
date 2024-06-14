@@ -2,14 +2,10 @@
 import type { Article } from '@/models/article';
 import { useContentStore } from '@/stores/content';
 import { useUIStateStore } from '@/stores/ui';
-import { filter } from 'vue/types/umd';
 
 const uiState = useUIStateStore();
 const content = useContentStore();
 
-const componentState = {
-    filteredArticles: [] as Article[]
-}
 
 /**
  * Get the filtered list of articles to display

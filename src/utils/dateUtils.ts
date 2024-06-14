@@ -22,6 +22,15 @@ export default class DateUtils {
         return date;
     }
 
-    
+    /**
+     * Given a date, return a string in the format "MMMM DD, YYYY HH:MM AM/PM"
+     * 
+     * @param date The date to format
+     * 
+     * @returns The formatted date
+     */
+    static presentDateAsMMMM_DD_YYYY_HH_MM_AMPM(date: Date) {
+        return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
+    }
 
 }

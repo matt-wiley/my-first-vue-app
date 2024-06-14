@@ -23,6 +23,10 @@ export const useContentStore = defineStore({
         getArticles: (state) => state.articles,
         getFilteredArticles: (state) => (sourceId: string) => {
             return state.articles.filter(a => a.sourceId === sourceId);
+        },
+        getArticle: (state) => (articleSha: string | null) => {
+            if (articleSha === null) return null;
+            return state.articles.find(a => a.sha256 === articleSha);
         }
     },
 

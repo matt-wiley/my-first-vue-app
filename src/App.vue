@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SourcesList from './components/SourcesList.vue';
 import ArticlesList from './components/ArticlesList.vue';
+import Article from './components/Article.vue';
 import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
 
@@ -34,8 +35,8 @@ import { useUIStateStore } from "./stores/ui";
                 <div class="scoped-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">
                     <ArticlesList />
                 </div>
-                <main class="scoped-main-column-style pa2 w-60 justify-start items-stretch">
-                    <router-view />
+                <main class="scoped-main-column-style pa0 w-60 justify-start items-stretch">
+                    <Article />
                 </main>
             </div>
         </div>

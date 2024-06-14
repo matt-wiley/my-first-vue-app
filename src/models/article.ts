@@ -1,5 +1,5 @@
 export interface Article {
-    sha256: string;
+    sha256: string; //article id
     sourceId: string;
     author: string;
     link: string;

@@ -1,33 +1,43 @@
 <script setup lang="ts">
-import Sidebar from './components/Sidebar.vue'
+import SourcesList from './components/SourcesList.vue';
+import ArticlesList from './components/ArticlesList.vue';
+import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
 
 (() => {
     // Setup the global stores
     const uiState = useUIStateStore();
+    const content = useContentStore();
+    content.initSampleData(); // TODO: Make this conditional on env variable 
 
     // @ts-ignore
-    window.stores = { uiState };
+    window.stores = { // TODO: Make this conditional on env variable
+        uiState,
+        content
+    };
+
 })();
 
 
 </script>
 
 <template>
-    <div id="app" class="flex flex-column vh-100">
-        <header class="scoped-header-style">
-            <h1 class="tc">RSS READER</h1>
-        </header>
-        <div id="ui-columns" class="flex flex-row vh-100">
-            <div class="scoped-far-west-column-style pa2 w-20">
-                <Sidebar />
+    <div id="app" class="vh-100 overflow-hidden">
+        <div class="flex flex-column h-100">
+            <header class="scoped-header-style">
+                <h1 class="tc">RSS READER</h1>
+            </header>
+            <div id="ui-columns" class="flex flex-row flex-grow-1 h-100">
+                <div class="scoped-far-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">
+                    <SourcesList />
+                </div>
+                <div class="scoped-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">
+                    <ArticlesList />
+                </div>
+                <main class="scoped-main-column-style pa2 w-60 justify-start items-stretch">
+                    <router-view />
+                </main>
             </div>
-            <div class="scoped-west-column-style pa3 w-20">
-                <h1>Articles</h1>
-            </div>
-            <main class="scoped-main-column-style pa3 w-60 justify-start items-stretch">
-                <router-view />
-            </main>
         </div>
     </div>
 </template>
@@ -52,5 +62,4 @@ import { useUIStateStore } from "./stores/ui";
     background-color: var(--content-area-bg-color);
     color: var(--content-page-text-color);
 }
-
 </style>

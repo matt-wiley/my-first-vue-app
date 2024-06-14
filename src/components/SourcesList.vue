@@ -1,12 +1,31 @@
 <script setup lang="ts">
-import type { Source } from '@/interfaces/source';
+import { useContentStore } from '@/stores/content';
 import { useUIStateStore } from '@/stores/ui';
-
-defineProps<{
-  sources: Source[];
-}>();
+import { set } from 'vue/types/umd';
 
 const uiState = useUIStateStore();
+const content = useContentStore();
+
+function handleClick(sourceId: string | null) {
+    if (uiState.getSelectedSourceId !== sourceId) {
+        uiState.setSelectedSourceId(sourceId);
+        uiState.setSelectedArticleId(null);
+    }
+}
+
+function handleStyles(sourceId: string | null) {
+    if (sourceId === null) {
+        return {
+            'selected': uiState.getSelectedSourceId === null,
+            'idle': uiState.getSelectedSourceId !== null
+        }
+    }
+    return {
+        'selected': uiState.getSelectedSourceId === sourceId,
+        'idle': uiState.getSelectedSourceId !== sourceId
+    }
+}
+
 
 </script>
 
@@ -15,20 +34,14 @@ const uiState = useUIStateStore();
     <h3>Sources</h3>
     <ul class="list ma0 pa0">
         <li class="list-item ma1 pa1 pl2 br2 pointer"
-            :class="{ 
-                'selected': uiState.getSelectedSourceId === null,
-                'idle': uiState.getSelectedSourceId !== null
-            }"
-            @click="uiState.setSelectedSourceId(null)"
+            :class="handleStyles(null)"
+            @click="handleClick(null)"
             >All</li>
         <li class="list-item ma1 pa1 pl2 br2 pointer"
-            :class="{ 
-                'selected': uiState.getSelectedSourceId === source.id,
-                'idle': uiState.getSelectedSourceId !== source.id
-            }"
-            v-for="source in sources" 
+            :class="handleStyles(source.id)"
+            @click="handleClick(source.id)"
+            v-for="source in content.getSources" 
             :key="source.id"
-            @click="uiState.setSelectedSourceId(source.id)"
             >{{ source.title }}</li>
     </ul>
   </section>

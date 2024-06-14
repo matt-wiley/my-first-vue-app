@@ -1,28 +1,30 @@
 import { defineStore } from "pinia";
 
 
-export const useUIStateStore = defineStore({
-  id: "ui",
-
-  state: () => ({
-    selectedSourceId: null,
-    selectedArticleId: null,
-  } as {
+interface UIState {
     selectedSourceId: string | null;
     selectedArticleId: string | null;
-  }),
+}
 
-  getters: {
-    getSelectedSourceId: (state) => state.selectedSourceId,
-    getSelectedArticleId: (state) => state.selectedArticleId,
-  },
+export const useUIStateStore = defineStore({
+    id: "ui",
 
-  actions: {
-    setSelectedSourceId(sourceId: string | null) {
-      this.selectedSourceId = sourceId;
+    state: () => ({
+        selectedSourceId: null,
+        selectedArticleId: null,
+    } as UIState),
+
+    getters: {
+        getSelectedSourceId: (state) => state.selectedSourceId,
+        getSelectedArticleId: (state) => state.selectedArticleId,
     },
-    setSelectedArticleId(articleId: string | null) {
-      this.selectedArticleId = articleId;
+
+    actions: {
+        setSelectedSourceId(sourceId: string | null) {
+            this.selectedSourceId = sourceId;
+        },
+        setSelectedArticleId(articleId: string | null) {
+            this.selectedArticleId = articleId;
+        },
     },
-  },
 });

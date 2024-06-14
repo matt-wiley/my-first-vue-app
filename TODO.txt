@@ -1,10 +1,14 @@
 
 
 
-[ ] Complete the Source List Component
+[ ] Create the Source Column Component
+
     [ ] Implement Add Source 
     [ ] Implement Remove Source
     [ ] Implement Edit Source 
 
+    
+[ ] Complete the Articles Column Component
+    
 
 TODO: Fill out the TODO.txt file

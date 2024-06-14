@@ -30,8 +30,7 @@ function getArticlesForSelectedSource() {
  * @returns True if there are articles to display, false otherwise
  */
 function hasArticles() {
-    componentState.filteredArticles = getArticlesForSelectedSource();
-    return componentState.filteredArticles.length > 0;
+    return getArticlesForSelectedSource().slice().length > 0
 }
 
 /**
@@ -41,7 +40,14 @@ function hasArticles() {
  */
 function getPresentableArticles() {
     const _dateDescending = (a: Article, b: Article) => b.publishedDate.getTime() - a.publishedDate.getTime();
-    return componentState.filteredArticles.sort(_dateDescending);
+    /* 
+     * We need to slice the array to make a copy of it, otherwise the sort will modify the original array
+     * causing the UI to rerender every time the list is sorted. This leads to a warning in the console about
+     * "possible infinite loop in render function"
+     * 
+     * ref: https://stackoverflow.com/a/67733729/25577406
+     */
+    return getArticlesForSelectedSource().slice().sort(_dateDescending);
 }
 
 /**

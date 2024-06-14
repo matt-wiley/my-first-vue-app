@@ -4,12 +4,6 @@ import { defineStore } from "pinia";
 
 import DateUtils from "@/utils/dateUtils";
 
-const _utils = {
-    sortByDateDesc(a: Article, b: Article) {
-        return b.publishedDate.getTime() - a.publishedDate.getTime();
-    }
-}
-
 export const useContentStore = defineStore({
     id: "content",
 

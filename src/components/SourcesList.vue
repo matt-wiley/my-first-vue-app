@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useContentStore } from '@/stores/content';
 import { useUIStateStore } from '@/stores/ui';
-import { set } from 'vue/types/umd';
 
 const uiState = useUIStateStore();
 const content = useContentStore();

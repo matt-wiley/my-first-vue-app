@@ -5,6 +5,7 @@ import type { ArticleRecord } from "@/models/articleRecord";
 import type { Source } from "@/models/source";
 import type { SourceRecord } from "@/models/sourceRecord";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
+import { NumberUtils as nu } from "@/utils/numberUtils";
 import { SampleDataUtils } from "@/utils/sampleDataUtils";
 
 export const useContentStore = defineStore({
@@ -37,7 +38,7 @@ export const useContentStore = defineStore({
             const sourceRecord = {... source} as SourceRecord;
             const hash = await HashUtils.digest(
                 HashAlgo.SHA1,
-                `${sourceRecord.title}${sourceRecord.url}`
+                sourceRecord.url
             );
             sourceRecord.id = `S-${hash}`;
             this.sources.push(sourceRecord);
@@ -56,6 +57,8 @@ export const useContentStore = defineStore({
             articleRecord.sha = sha;
             articleRecord.id = `A-${id}`;
             articleRecord.sourceId = sourceRecord.id;
+            articleRecord.isTombstoned = SampleDataUtils.randomTombstone(); // FIXME: This is for dev only, remove in production
+            articleRecord.freshness = SampleDataUtils.randomFreshness(); // FIXME: This is for dev only, remove in production
             this.articles.push(articleRecord);
             return articleRecord;
         },
@@ -71,7 +74,8 @@ export const useContentStore = defineStore({
                 // add SourceRecord to datastore, and get id
                 const sourceRecord = await this.addSource(source);
 
-                for (let j = 0; j < maxArticlesPerSource; j++) {
+                const randomNumberOfArticles = nu.randomIntInRange(1, maxArticlesPerSource);
+                for (let j = 0; j < randomNumberOfArticles; j++) {
                     // create new Article
                     const article = SampleDataUtils.generateArticle();
                     // add ArticleRecord to datastore

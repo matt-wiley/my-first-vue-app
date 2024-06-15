@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useContentStore } from '@/stores/content';
+import { useUIStateStore } from '@/stores/ui';
 
+const uiState = useUIStateStore();
 const content = useContentStore();
 
 const buttonActions = [
@@ -8,14 +10,9 @@ const buttonActions = [
         title: "Refresh",
         icon: "fas fa-rotate",
         action: () => {
+            uiState.setSelectedSourceId(null);
+            uiState.setSelectedArticleId(null);
             content.initSampleData();
-        }
-    },
-    {
-        title: "Scroll to top",
-        icon: "fas fa-circle-up",
-        action: () => {
-            window.scrollTo(0, 0);
         }
     }
 ];

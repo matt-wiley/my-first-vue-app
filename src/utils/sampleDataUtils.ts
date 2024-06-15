@@ -1,8 +1,9 @@
 import type { Article } from "@/models/article";
 import type { Source } from "@/models/source";
-import DateUtils from "./dateUtils";
+import { DateUtils as du } from "./dateUtils";
 import { StringUtils as su } from "./stringUtils";
 import { NumberUtils as nu } from "./numberUtils";
+import { Freshness } from "@/models/freshness";
 
 
 
@@ -11,13 +12,13 @@ export class SampleDataUtils {
         const random = Math.floor(Math.random() * 10);
         if (random < 1) {
             // 10% chance of being new
-            return "New";
+            return Freshness.New;
         } else if (random < 8) {
             // 70% chance of being current
-            return "Current";
+            return Freshness.Current;
         } else {
             // 20% chance of being stale
-            return "Stale";
+            return Freshness.Stale;
         }
     }
 
@@ -51,7 +52,7 @@ export class SampleDataUtils {
             author: randomAuthor,
             link: `https://www.example.com/article/${randomArticleSlug}`,
             content: su.wordsOfloremIpsum(randomNumberOfContentWords),
-            publishedDate: DateUtils.randomDate(
+            publishedDate: du.randomDate(
                 new Date(2021, 0, 1),
                 new Date()
             ),

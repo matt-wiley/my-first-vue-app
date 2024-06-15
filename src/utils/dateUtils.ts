@@ -1,7 +1,9 @@
 
 
-
-export default class DateUtils {
+/**
+ * A utility class for date operations
+ */
+export class DateUtils {
 
     /**
      * Given a start and end date, return a random date between them
@@ -34,3 +36,4 @@ export default class DateUtils {
     }
 
 }
+export default DateUtils;

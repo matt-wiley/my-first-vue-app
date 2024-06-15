@@ -34,11 +34,16 @@ function presentDate(date: Date | null | undefined) {
                     <p>{{ getSelectedArticle()?.author }}</p>
                     <p>
                         {{ presentDate(getSelectedArticle()?.publishedDate) }}
-                    </p>
+                    </p>  
+                </div>
+                <p>{{ getSelectedArticle()?.content }}</p>
+                <div class="mt4">
+                    <p>sha = {{ getSelectedArticle()?.sha }}</p>
+                    <p>id = {{ getSelectedArticle()?.id }}</p>
+                    <p>sourceId = {{ getSelectedArticle()?.sourceId }}</p>
                     <p>isTombstoned = {{ getSelectedArticle()?.isTombstoned }}</p>
                     <p>freshness = {{ getSelectedArticle()?.freshness }}</p>
                 </div>
-                <p>{{ getSelectedArticle()?.content }}</p>
                 <div class="vh-25 w-100">&nbsp;</div>
             </div>
         </section>

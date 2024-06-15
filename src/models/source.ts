@@ -1,5 +1,7 @@
+/**
+ * Represents an RSS feed source
+ */
 export interface Source {
-    id: string;
     title: string;
     url: string;
     description?: string;

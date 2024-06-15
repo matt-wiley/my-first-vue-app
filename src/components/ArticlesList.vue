@@ -79,10 +79,10 @@ function handleStyles(articleId: string | null) {
         <section v-if="hasArticles()" class="ma0 pa0">
             <ul class="list ma0 pa0">
                 <li class="list-item ma1 pa1 pl2 br2 pointer" 
-                    :class="handleStyles(article.sha256)" 
+                    :class="handleStyles(article.id)" 
                     v-for="article in getPresentableArticles()" 
-                    :key="article.sha256" 
-                    @click="handleClick(article.sha256)"
+                    :key="article.id" 
+                    @click="handleClick(article.id)"
                     >{{ article.title }}</li>
             </ul>
             <div class="vh-75 w-100">&nbsp;</div>

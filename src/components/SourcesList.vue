@@ -39,7 +39,7 @@ function handleStyles(sourceId: string | null) {
         <li class="list-item ma1 pa1 pl2 br2 pointer"
             :class="handleStyles(source.id)"
             @click="handleClick(source.id)"
-            v-for="source in content.getSources" 
+            v-for="source in content.getAllSources" 
             :key="source.id"
             >{{ source.title }}</li>
     </ul>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Article } from "@/models/article";
+import { Freshness } from "@/models/freshness";
 import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from "@/stores/ui";
 import DateUtils from "@/utils/dateUtils";
@@ -34,6 +35,8 @@ function presentDate(date: Date | null | undefined) {
                     <p>
                         {{ presentDate(getSelectedArticle()?.publishedDate) }}
                     </p>
+                    <p>isTombstoned = {{ getSelectedArticle()?.isTombstoned }}</p>
+                    <p>freshness = {{ getSelectedArticle()?.freshness }}</p>
                 </div>
                 <p>{{ getSelectedArticle()?.content }}</p>
                 <div class="vh-25 w-100">&nbsp;</div>

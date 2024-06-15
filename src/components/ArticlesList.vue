@@ -14,7 +14,7 @@ const content = useContentStore();
  */
 function getArticlesForSelectedSource() {
     if (uiState.getSelectedSourceId) {
-        return content.getFilteredArticles(uiState.getSelectedSourceId);
+        return content.getArticlesForSourceId(uiState.getSelectedSourceId);
     } else {
         return content.getArticles;
     }

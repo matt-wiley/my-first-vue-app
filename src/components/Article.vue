@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Article } from "@/models/article";
-import { Freshness } from "@/models/freshness";
+import type { ArticleRecord } from "@/models/articleRecord";
 import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from "@/stores/ui";
 import DateUtils from "@/utils/dateUtils";
@@ -8,10 +7,8 @@ import DateUtils from "@/utils/dateUtils";
 const uiState = useUIStateStore();
 const content = useContentStore();
 
-const componentState = { article: null as Article | null };
-
 function getSelectedArticle() {
-    return content.getArticle(uiState.getSelectedArticleId) as Article | null;
+    return content.getArticle(uiState.getSelectedArticleId) as ArticleRecord | null;
 }
 
 function presentDate(date: Date | null | undefined) {

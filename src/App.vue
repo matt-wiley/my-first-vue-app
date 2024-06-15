@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Header from './components/Header.vue';
 import SourcesList from './components/SourcesList.vue';
 import ArticlesList from './components/ArticlesList.vue';
 import Article from './components/Article.vue';
@@ -26,7 +27,7 @@ import { useUIStateStore } from "./stores/ui";
     <div id="app" class="vh-100 overflow-hidden">
         <div class="flex flex-column h-100">
             <header class="scoped-header-style">
-                <h1 class="tc">RSS READER</h1>
+                <Header />
             </header>
             <div id="ui-columns" class="flex flex-row flex-grow-1 h-100">
                 <div class="scoped-far-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">

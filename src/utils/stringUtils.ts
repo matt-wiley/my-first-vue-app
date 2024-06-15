@@ -31,10 +31,26 @@ export class StringUtils {
         return LOREM_IPSUM.slice(0, numberOfWords).join(" ");
     }
 
+    /**
+     * Generates a random range of lorem ipsum text.
+     *
+     * @param length The length of the string to generate.
+     * @returns A random range of lorem ipsum text.
+     */
     static randomWordsOfloremIpsum(length: number): string {
         const maxStartIndex = SHUFFLE_LOREM_IPSUM.length - length;
         const startIndex = Math.floor(Math.random() * maxStartIndex);
         return SHUFFLE_LOREM_IPSUM.slice(startIndex, startIndex + length).join(" ");
+    }
+
+    /**
+     * Capitalizes the first letter of a string.
+     *
+     * @param str The string to capitalize.
+     * @returns The string with the first letter capitalized.
+     */
+    static capitalizeFirstLetter(str: string): string {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
 }

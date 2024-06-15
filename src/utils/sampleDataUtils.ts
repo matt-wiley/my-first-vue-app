@@ -1,8 +1,8 @@
 import type { Article } from "@/models/article";
 import type { Source } from "@/models/source";
 import DateUtils from "./dateUtils";
-import StringUtils from "./stringUtils";
-import NumberUtils from "./numberUtils";
+import { StringUtils as su } from "./stringUtils";
+import { NumberUtils as nu } from "./numberUtils";
 
 
 
@@ -33,24 +33,24 @@ export class SampleDataUtils {
     }
 
     static generateSource(): Source {
-        const randomString = StringUtils.randomStringOfLength(6);
+        const randomString = su.randomStringOfLength(6);
         return {
             title: `Source ${randomString}`,
             url: `https://www.example.com/${randomString}`,
-            description: StringUtils.wordsOfloremIpsum(NumberUtils.randomIntInRange(5, 20)),
+            description: su.wordsOfloremIpsum(nu.randomIntInRange(5, 20)),
         };
     }
 
     static generateArticle(): Article {
-        const randomArticleSlug = StringUtils.randomStringOfLength(6);
-        const randomAuthor = `${StringUtils.randomStringOfLength(6)} ${StringUtils.randomStringOfLength(6)}`;
-        const randomNumberOfContentWords = NumberUtils.randomIntInRange(20, 100);
-        const randomNumberOfTitleWords = NumberUtils.randomIntInRange(3, 15);
+        const randomArticleSlug = su.randomStringOfLength(6);
+        const randomAuthor = `${su.randomStringOfLength(6)} ${su.randomStringOfLength(6)}`;
+        const randomNumberOfContentWords = nu.randomIntInRange(20, 100);
+        const randomNumberOfTitleWords = nu.randomIntInRange(3, 15);
         return {
-            title: StringUtils.randomWordsOfloremIpsum(randomNumberOfTitleWords),
+            title: su.capitalizeFirstLetter(su.randomWordsOfloremIpsum(randomNumberOfTitleWords)),
             author: randomAuthor,
             link: `https://www.example.com/article/${randomArticleSlug}`,
-            content: StringUtils.wordsOfloremIpsum(randomNumberOfContentWords),
+            content: su.wordsOfloremIpsum(randomNumberOfContentWords),
             publishedDate: DateUtils.randomDate(
                 new Date(2021, 0, 1),
                 new Date()

@@ -5,6 +5,7 @@ import ArticlesList from './components/ArticlesList.vue';
 import Article from './components/Article.vue';
 import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
+import AddSourceButton from './components/AddSourceButton.vue';
 
 (() => {
     // Setup the global stores

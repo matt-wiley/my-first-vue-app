@@ -19,12 +19,7 @@ function addSource() {
 <template>
     <div class="flex flex-column">
         <div class="flex flex-row justify-start">
-            <button
-                class="button pointer mr1 br2 pa2"
-                title="Add Source"
-                @click="addSource()">
-            Add Source
-            </button>
+            <AddSourceButton />
         </div>
         <SourcesList />
     </div>

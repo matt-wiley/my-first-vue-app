@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from './components/Header.vue';
-import SourcesList from './components/SourcesList.vue';
+import SourcesColumn from './components/SourcesColumn.vue';
 import ArticlesList from './components/ArticlesList.vue';
 import Article from './components/Article.vue';
 import { useContentStore } from './stores/content';
@@ -31,7 +31,7 @@ import { useUIStateStore } from "./stores/ui";
             </header>
             <div id="ui-columns" class="flex flex-row flex-grow-1 h-100">
                 <div class="scoped-far-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">
-                    <SourcesList />
+                    <SourcesColumn />
                 </div>
                 <div class="scoped-west-column-style pa2 w-20 overflow-x-hidden overflow-y-scroll">
                     <ArticlesList />

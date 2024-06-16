@@ -24,8 +24,6 @@ function handleStyles(sourceId: string | null) {
         'idle': uiState.getSelectedSourceId !== sourceId
     }
 }
-
-
 </script>
 
 <template>

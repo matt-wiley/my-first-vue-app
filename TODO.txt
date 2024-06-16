@@ -34,15 +34,9 @@
                 - if Freshness == "new" or "up-to-date" => soft delete in datastore to prevent reappearance
                 - if Freshness == "stale" => hard delete from datastore
 
-            
-
-
 [ ] Create Settings view
     [ ] Persist settings to local storage
     - Available settings:
         - Max stale to keep
         - Max age to keep
         - Update settings ??
-
-    
-TODO: Fill out the TODO.txt file

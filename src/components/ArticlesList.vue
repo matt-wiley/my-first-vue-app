@@ -89,7 +89,7 @@ function handleStyles(articleId: string | null) {
         </section>
         <section v-else class="ma0 pa0">
             <!-- TODO: Make a better empty list message. -->
-            <p>No articles to display</p>
+            <p class="tc pa2">No articles for selected source</p>
         </section>
     </div>
 </template>

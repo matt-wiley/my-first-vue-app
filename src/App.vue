@@ -5,16 +5,18 @@ import ArticlesList from './components/ArticlesList.vue';
 import Article from './components/Article.vue';
 import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
-import AddSourceButton from './components/AddSourceButton.vue';
 
 (() => {
     // Setup the global stores
     const uiState = useUIStateStore();
     const content = useContentStore();
-    content.initSampleData(); // TODO: Make this conditional on env variable 
 
+    // TODO: Make this conditional on env variable
+    content.initSampleData();  
+
+    // TODO: Make this conditional on env variable
     // @ts-ignore
-    window.stores = { // TODO: Make this conditional on env variable
+    window.stores = { 
         uiState,
         content
     };

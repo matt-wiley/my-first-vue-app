@@ -37,7 +37,7 @@ export class SampleDataUtils {
         const randomString = su.randomStringOfLength(6);
         return {
             title: `Source ${randomString}`,
-            url: `https://www.example.com/${randomString}`,
+            feedUrl: `https://www.example.com/${randomString}`,
             description: su.wordsOfloremIpsum(nu.randomIntInRange(5, 20)),
         };
     }

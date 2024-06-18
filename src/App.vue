@@ -5,6 +5,8 @@ import ArticlesList from './components/ArticlesList.vue';
 import Article from './components/Article.vue';
 import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
+import FeedFetchService from './services/feedFetchService';
+import FeedParserService from './services/feedParserService';
 
 (() => {
     // Setup the global stores
@@ -20,6 +22,12 @@ import { useUIStateStore } from "./stores/ui";
         uiState,
         content
     };
+
+    // @ts-ignore
+    window.feedFetch = FeedFetchService.getInstance()
+
+    // @ts-ignore
+    window.feedParse = FeedParserService.getInstance();
 
 })();
 

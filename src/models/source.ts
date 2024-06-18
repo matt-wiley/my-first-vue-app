@@ -3,6 +3,7 @@
  */
 export interface Source {
     title: string;
-    url: string;
+    feedUrl: string;
+    url?: string;
     description?: string;
 }

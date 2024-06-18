@@ -1,12 +1,14 @@
-## my-first-vue-app
+# my-first-vue-app
+
+
+
+## 
 
 ### shuttle-server
 
 This is a support server that removes CORS restrictions for retrieving resources (in this case XML for feed data).
 
 - Codebase: https://github.com/matt-wiley/shuttle-server
-
-
 
 #### Example `fetch` from browser
 

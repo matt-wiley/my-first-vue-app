@@ -38,7 +38,7 @@ export const useContentStore = defineStore({
             const sourceRecord = {... source} as SourceRecord;
             const hash = await HashUtils.digest(
                 HashAlgo.SHA1,
-                sourceRecord.url
+                sourceRecord.feedUrl
             );
             sourceRecord.id = `S-${hash}`;
             this.sources.push(sourceRecord);

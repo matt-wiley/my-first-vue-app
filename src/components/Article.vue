@@ -3,6 +3,7 @@ import type { ArticleRecord } from "@/models/articleRecord";
 import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from "@/stores/ui";
 import DateUtils from "@/utils/dateUtils";
+import { h } from "vue";
 
 const uiState = useUIStateStore();
 const content = useContentStore();
@@ -17,23 +18,30 @@ function presentDate(date: Date | null | undefined) {
     }
     return DateUtils.presentDateAsMMMM_DD_YYYY_HH_MM_AMPM(date);
 }
+
+function loadArticleContent() {
+    if (uiState.selectedArticleId !== null) {
+        const contentDiv = document.querySelector(`[articleId=${uiState.selectedArticleId}]`)?.querySelector("#article-content");
+        if (contentDiv) {
+            contentDiv.innerHTML = getSelectedArticle()?.content || "";
+        }
+    }
+}
+
 </script>
 
 <template>
-    <div
-        class="ma0 pa0 w-100 h-100 overflow-x-hidden overflow-y-scroll"
-        v-bind:articleId="uiState.selectedArticleId"
-    >
+    <div class="ma0 pa0 w-100 h-100 overflow-x-hidden overflow-y-scroll" v-bind:articleId="uiState.selectedArticleId">
         <section class="" v-if="uiState.selectedArticleId !== null">
             <div class="br2 ml4 mt5 mr4 pa4 bg-white h-100">
                 <h2 class="pb2">{{ getSelectedArticle()?.title }}</h2>
                 <div class="pb4">
-                    <p>{{ getSelectedArticle()?.author }}</p>
+                    <p v-html="getSelectedArticle()?.author" />
                     <p>
-                        {{ presentDate(getSelectedArticle()?.publishedDate) }}
-                    </p>  
+                        {{ presentDate(getSelectedArticle()?.date) }}
+                    </p>
                 </div>
-                <p>{{ getSelectedArticle()?.content }}</p>
+                <div v-html="getSelectedArticle()?.content" />
                 <div class="mt4">
                     <p>sha = {{ getSelectedArticle()?.sha }}</p>
                     <p>id = {{ getSelectedArticle()?.id }}</p>

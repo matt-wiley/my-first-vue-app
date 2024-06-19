@@ -85,7 +85,7 @@ export default class FeedFetchService {
           .then((response) => response.text());
 
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(feedXml, "text/xml");
+        const xmlDoc = parser.parseFromString(feedXml.trim(), "text/xml");
         return xmlDoc;
     }
 

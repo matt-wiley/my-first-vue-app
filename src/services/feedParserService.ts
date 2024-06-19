@@ -1,7 +1,8 @@
-import type { Source } from "../models/source";
-import type { Article } from "../models/article";
+import type Source from "../models/source";
+import type Article from "../models/article";
 
 import FeedFetchService from "./feedFetchService";
+import AtomParserService from "./atomParserService";
 
 export interface ParsedFeed {
     source: Source;
@@ -33,7 +34,7 @@ export default class FeedParserService {
             case "rss":
                 return this.parseFeedWithContext(feed, new RssParsingContext());
             case "feed":
-                return this.parseFeedWithContext(feed, new AtomParsingContext());
+                return AtomParserService.parseFeedAndTransform(feed);
             default:
                 throw new Error("Unsupported feed type");
         }
@@ -67,13 +68,15 @@ export default class FeedParserService {
         const link = this.getTagContent(articleElement, context.articleLinkTag());
         const title = this.getTagContent(articleElement, context.articleTitleTag());
         const content = this.getTagContent(articleElement, context.articleContentTag());
-        const publishedDate = new Date(this.getTagContent(articleElement, context.articlePublishedDateTag()));
-        return { author, link, title, content, publishedDate };
+        const date = new Date(this.getTagContent(articleElement, context.articlePublishedDateTag()));
+        return { author, link, title, content, date};
     }
+
+
 
     private getTagContent(element: Element, tagName: string): string {
         const tag = element.getElementsByTagName(tagName)[0];
-        return tag?.textContent || "";
+        return tag?.innerHTML || "";
     }
 }
 
@@ -134,53 +137,5 @@ class RssParsingContext implements ParsingContext {
 
     public articlePublishedDateTag(): string {
         return RssParsingContext.ARTICLE_PUBLISHED_DATE_TAG;
-    }
-}
-
-class AtomParsingContext implements ParsingContext {
-    private static readonly SOURCE_TITLE_TAG = "title";
-    private static readonly SOURCE_SITE_URL_TAG = "link";
-    private static readonly SOURCE_DESCRIPTION_TAG = "subtitle";
-    private static readonly ARTICLE_TAG = "entry";
-    private static readonly ARTICLE_AUTHOR_TAG = "author";
-    private static readonly ARTICLE_LINK_TAG = "link";
-    private static readonly ARTICLE_TITLE_TAG = "title";
-    private static readonly ARTICLE_CONTENT_TAG = "content";
-    private static readonly ARTICLE_PUBLISHED_DATE_TAG = "published";
-
-    public sourceTitleTag(): string {
-        return AtomParsingContext.SOURCE_TITLE_TAG;
-    }
-
-    public sourceSiteUrlTag(): string {
-        return AtomParsingContext.SOURCE_SITE_URL_TAG;
-    }
-
-    public sourceDescriptionTag(): string {
-        return AtomParsingContext.SOURCE_DESCRIPTION_TAG;
-    }
-
-    public articleTag(): string {
-        return AtomParsingContext.ARTICLE_TAG;
-    }
-
-    public articleAuthorTag(): string {
-        return AtomParsingContext.ARTICLE_AUTHOR_TAG;
-    }
-
-    public articleLinkTag(): string {
-        return AtomParsingContext.ARTICLE_LINK_TAG;
-    }
-
-    public articleTitleTag(): string {
-        return AtomParsingContext.ARTICLE_TITLE_TAG;
-    }
-
-    public articleContentTag(): string {
-        return AtomParsingContext.ARTICLE_CONTENT_TAG;
-    }
-
-    public articlePublishedDateTag(): string {
-        return AtomParsingContext.ARTICLE_PUBLISHED_DATE_TAG;
     }
 }

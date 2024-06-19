@@ -2,12 +2,16 @@
 import { ValidationUtils as vu } from "@/utils/validationUtils";
 import { useContentStore } from "@/stores/content";
 import { reactive } from "vue";
+import FeedParserService from "@/services/feedParserService";
 
+const feedParser = FeedParserService.getInstance();
 const content = useContentStore();
+
 
 const state = reactive({
     showAddSourceForm: false,
     sourceUrl: null,
+
 });
 
 function toggleAddSourceForm() {
@@ -18,8 +22,19 @@ function toggleAddSourceForm() {
     }
 }
 
-function addNewSource() {
+async function addNewSource() {
     console.log(`addNewSource: ${state.sourceUrl}`);
+
+    if (state.sourceUrl !== null && vu.isValidUrl(state.sourceUrl)) {
+        const feedData = await feedParser.fetchAndParseFeed(state.sourceUrl);
+        if (feedData !== null) {
+            const sourceRecord = await content.addSource(feedData.source);
+            for (const article of feedData.articles) {
+                content.addArticle(sourceRecord,article);
+            }
+            toggleAddSourceForm();
+        }
+    }
 }
 
 </script>
@@ -62,7 +77,7 @@ function addNewSource() {
                     }"
                     :disabled="!vu.isValidUrl(state.sourceUrl)"
                     title="Add Source"
-                    @click="toggleAddSourceForm()"
+                    @click="addNewSource()"
                 >
                     Add
                 </button>

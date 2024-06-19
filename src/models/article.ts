@@ -1,10 +1,11 @@
 /**
- *  Represents an item from an RSS source
+ *  @description Represents an item from an RSS source
  */
-export interface Article {
-    author: string;
-    link: string;
-    title: string;
-    content: string;
-    publishedDate: Date;
+export default interface Article {
+    externalId?: string;
+    title?: string;
+    date?: Date;
+    author?: string;
+    link?: string;
+    content?: string;
 }

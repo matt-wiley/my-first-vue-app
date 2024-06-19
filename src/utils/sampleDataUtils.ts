@@ -1,9 +1,9 @@
-import type { Article } from "@/models/article";
-import type { Source } from "@/models/source";
+import type Article from "@/models/article";
+import Freshness from "@/models/freshness";
+import type Source from "@/models/source";
 import { DateUtils as du } from "./dateUtils";
-import { StringUtils as su } from "./stringUtils";
 import { NumberUtils as nu } from "./numberUtils";
-import { Freshness } from "@/models/freshness";
+import { StringUtils as su } from "./stringUtils";
 
 
 

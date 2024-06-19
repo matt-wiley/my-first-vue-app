@@ -57,8 +57,8 @@ export const useContentStore = defineStore({
             articleRecord.sha = sha;
             articleRecord.id = `A-${id}`;
             articleRecord.sourceId = sourceRecord.id;
-            articleRecord.isTombstoned = SampleDataUtils.randomTombstone(); // FIXME: This is for dev only, remove in production
-            articleRecord.freshness = SampleDataUtils.randomFreshness(); // FIXME: This is for dev only, remove in production
+            // articleRecord.isTombstoned = SampleDataUtils.randomTombstone(); // FIXME: This is for dev only, remove in production
+            // articleRecord.freshness = SampleDataUtils.randomFreshness(); // FIXME: This is for dev only, remove in production
             this.articles.push(articleRecord);
             return articleRecord;
         },

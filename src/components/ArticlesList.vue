@@ -35,7 +35,7 @@ function hasArticles() {
  * @returns The list of articles to display, sorted by date descending
  */
 function getPresentableArticles() {
-    const _dateDescending = (a: Article, b: Article) => b.publishedDate.getTime() - a.publishedDate.getTime();
+    const _dateDescending = (a: Article, b: Article) => b.date.getTime() - a.date.getTime();
     /* 
      * We need to slice the array to make a copy of it, otherwise the sort will modify the original array
      * causing the UI to rerender every time the list is sorted. This leads to a warning in the console about

@@ -1,7 +1,7 @@
-import type { Source } from "./source";
+import type Source from "./source";
 
 /**
- * Represents a source record in the datastore.
+ * @description Represents a source record in the datastore.
  */
 export interface SourceRecord extends Source {
     id: string;

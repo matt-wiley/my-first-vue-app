@@ -7,6 +7,7 @@ import { useContentStore } from './stores/content';
 import { useUIStateStore } from "./stores/ui";
 import FeedFetchService from './services/feedFetchService';
 import FeedParserService from './services/feedParserService';
+import AtomParserService from './services/atomParserService';
 
 (() => {
     // Setup the global stores
@@ -14,7 +15,7 @@ import FeedParserService from './services/feedParserService';
     const content = useContentStore();
 
     // TODO: Make this conditional on env variable
-    content.initSampleData();  
+    // content.initSampleData();  
 
     // TODO: Make this conditional on env variable
     // @ts-ignore
@@ -28,6 +29,9 @@ import FeedParserService from './services/feedParserService';
 
     // @ts-ignore
     window.feedParse = FeedParserService.getInstance();
+
+    // @ts-ignore
+    window.atomParser = AtomParserService;
 
 })();
 

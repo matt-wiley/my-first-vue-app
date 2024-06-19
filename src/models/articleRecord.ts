@@ -1,8 +1,8 @@
-import type { Freshness } from "./freshness";
-import type { Article } from "./article";
+import type Freshness from "./freshness";
+import type Article from "./article";
 
 /**
- * Represents an article record in the datastore.
+ * @description Represents an article record in the datastore.
  */
 export interface ArticleRecord extends Article {
     sha: string; 

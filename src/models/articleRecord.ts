@@ -4,7 +4,7 @@ import type Article from "./article";
 /**
  * @description Represents an article record in the datastore.
  */
-export interface ArticleRecord extends Article {
+export default interface ArticleRecord extends Article {
     sha: string; 
     id: string;
     sourceId: string;

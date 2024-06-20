@@ -5,18 +5,18 @@ import { useUIStateStore } from '@/stores/ui';
 const uiState = useUIStateStore();
 const content = useContentStore();
 
-function handleClick(sourceId: string | null) {
+function handleClick(sourceId?: string) {
     if (uiState.getSelectedSourceId !== sourceId) {
         uiState.setSelectedSourceId(sourceId);
-        uiState.setSelectedArticleId(null);
+        uiState.setSelectedArticleId(undefined);
     }
 }
 
-function handleStyles(sourceId: string | null) {
+function handleStyles(sourceId?: string) {
     if (sourceId === null) {
         return {
-            'selected': uiState.getSelectedSourceId === null,
-            'idle': uiState.getSelectedSourceId !== null
+            'selected': uiState.getSelectedSourceId === undefined,
+            'idle': uiState.getSelectedSourceId !== undefined
         }
     }
     return {
@@ -31,8 +31,8 @@ function handleStyles(sourceId: string | null) {
     <h3>Sources</h3>
     <ul class="list ma0 pa0">
         <li class="list-item ma1 pa1 pl2 br2 pointer"
-            :class="handleStyles(null)"
-            @click="handleClick(null)"
+            :class="handleStyles()"
+            @click="handleClick()"
             >All</li>
         <li class="list-item ma1 pa1 pl2 br2 pointer"
             :class="handleStyles(source.id)"

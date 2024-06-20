@@ -15,7 +15,7 @@ import AtomParserService from './services/atomParserService';
     const content = useContentStore();
 
     // TODO: Make this conditional on env variable
-    // content.initSampleData();  
+    // content.initSampleData(); 
 
     // TODO: Make this conditional on env variable
     // @ts-ignore

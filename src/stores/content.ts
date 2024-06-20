@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 
-import type { Article } from "@/models/article";
-import type { ArticleRecord } from "@/models/articleRecord";
-import type { Source } from "@/models/source";
+import type Source from "@/models/source";
+import type ArticleRecord from "@/models/articleRecord";
+import type Article from "@/models/article";
 import type { SourceRecord } from "@/models/sourceRecord";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
-import { NumberUtils as nu } from "@/utils/numberUtils";
 import { SampleDataUtils } from "@/utils/sampleDataUtils";
+import { NumberUtils as nu } from "@/utils/numberUtils";
 
 export const useContentStore = defineStore({
     id: "content",

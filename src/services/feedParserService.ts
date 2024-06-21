@@ -22,7 +22,7 @@ export default class FeedParserService {
     }
 
     public async fetchAndParseFeed(feedUrl: string): Promise<ParsedFeed> {
-        const feed = await FeedFetchService.getInstance().updateFeed(feedUrl);
+        const feed = await FeedFetchService.getInstance().fetchFeed(feedUrl);
         const result = this.parseFeed(feed);
         result.source.feedUrl = feedUrl;
         return result;

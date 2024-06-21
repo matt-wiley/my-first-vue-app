@@ -96,7 +96,7 @@ export default class FeedFetchService {
      * @param url The URL of the feed to update
      * @returns The feed data as a Document object parsed by a DOMParser
      */
-    public async updateFeed(url: RssFeedUrl): Promise<Document> {
+    public async fetchFeed(url: RssFeedUrl): Promise<Document> {
         if (this.CACHE.has(url) && !this.CACHE.isStale(url, this.CACHE_MAX_AGE)) {
             return this.CACHE.get(url)!.data;
         }

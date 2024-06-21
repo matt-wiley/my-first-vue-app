@@ -8,6 +8,9 @@ export default defineConfig({
     outputFile: {
       junit: "test-results/junit.xml",
       json: "test-results/results.json",
+    },
+    coverage: {
+      reporter: ["text","json-summary","json"],
     }
   },
 })

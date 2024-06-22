@@ -5,6 +5,7 @@ import { useContentStore } from "../content";
 import { setActivePinia, createPinia } from "pinia";
 import exp from "constants";
 import StringUtils from "@/utils/stringUtils";
+import Freshness from "@/models/freshness";
 
 
 const getFeedUrlForTest = () => {
@@ -76,6 +77,19 @@ describe("content", () => {
     expect(contentStore.sources).toContain(sourceRecord);
   });
 
+  it("throws an error when adding a source with an empty feed URL", async () => {
+
+    const contentStore = useContentStore();
+    const source = SampleDataUtils.generateSource();
+    source.feedUrl = "";
+    try {
+      await contentStore.addSource(source);
+      expect(true).toBe(false);
+    } catch (e: any) {
+      expect(e.message).toEqual("Feed URL is required");
+    }
+  });
+
   it("adds an article", async () => {
     const feedUrlForTest = getFeedUrlForTest()
     const contentStore = useContentStore();
@@ -94,9 +108,26 @@ describe("content", () => {
     expect(articleRecord.sourceId).toEqual(sourceRecord.id);
     expect(articleRecord.sha).toEqual(await HashUtils.digest(HashAlgo.SHA256, `${articleRecord.sourceId}${articleRecord.title}${articleRecord.link}`));
     expect(articleRecord.id).toEqual(`A-${await HashUtils.digest(HashAlgo.SHA1, articleRecord.sha)}`);
-    
+
 
     expect(contentStore.articles).toContain(articleRecord);
+  });
+
+  it("tombstones an article", async () => {
+    const { contentStore, articleARecord } = await setupForGetterTests();
+    contentStore.deleteArticle(articleARecord);
+    expect(articleARecord.isTombstoned).toBe(true);
+  });
+
+  it("does not tombstone a stale article", async () => {
+
+    const { contentStore, articleARecord } = await setupForGetterTests();
+    articleARecord.freshness = Freshness.Stale;
+    contentStore.deleteArticle(articleARecord);
+
+    expect(contentStore.getArticle(articleARecord.id)).toBe(undefined);
+    expect(contentStore.getAllArticles).not.toContain(articleARecord);
+
   });
 
   it("gets all sources", async () => {

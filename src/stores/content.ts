@@ -74,27 +74,5 @@ export const useContentStore = defineStore({
         }
       }
     },
-    async initSampleData(maxSources = 10, maxArticlesPerSource = 10) {
-      // Clear existing data
-      this.sources = [];
-      this.articles = [];
-
-      // Generate new sample data
-      for (let i = 0; i < maxSources; i++) {
-        // create new Source
-        const source = SampleDataUtils.generateSource();
-        // add SourceRecord to datastore, and get id
-        const sourceRecord = await this.addSource(source);
-
-        const randomNumberOfArticles = nu.randomIntInRange(1, maxArticlesPerSource);
-        for (let j = 0; j < randomNumberOfArticles; j++) {
-          // create new Article
-          const article = SampleDataUtils.generateArticle();
-          // add ArticleRecord to datastore
-          await this.addArticle(sourceRecord, article);
-        }
-      }
-      console.log("Sample data loaded");
-    },
   },
 });

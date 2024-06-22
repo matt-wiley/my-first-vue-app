@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useContentStore } from '@/stores/content';
 import { useUIStateStore } from '@/stores/ui';
+import { SampleDataUtils } from '@/utils/sampleDataUtils';
 
 const uiState = useUIStateStore();
 const content = useContentStore();
@@ -10,9 +11,9 @@ const buttonActions = [
         title: "Refresh",
         icon: "fas fa-rotate",
         action: () => {
-            uiState.setSelectedSourceId(null);
-            uiState.setSelectedArticleId(null);
-            content.initSampleData();
+            uiState.setSelectedSourceId();
+            uiState.setSelectedArticleId();
+            SampleDataUtils.initSampleData(content);
         }
     }
 ];

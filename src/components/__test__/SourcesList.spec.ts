@@ -5,14 +5,16 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, expect, it } from "vitest";
 import SourcesList from "../SourcesList.vue";
+import { useContentStore } from "@/stores/content";
 
 
-describe("SourceList.vue", () => {
+describe("SourcesList.vue", () => {
 
   it("renders properly when sources are available", async () => {
     const piniaForTest = setActivePinia(createPinia());
     const contentStoreSetup = await TestUtils.setupContentStore({
-      piniaForTest: piniaForTest
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useContentStore
     });
 
     const wrapper = mount(SourcesList, {});
@@ -31,7 +33,8 @@ describe("SourceList.vue", () => {
 
     const piniaForTest = setActivePinia(createPinia());
     const contentStoreSetup = await TestUtils.setupContentStore({
-      piniaForTest: piniaForTest
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useContentStore
     });
     const selectedSourceId = contentStoreSetup.contentStore.getAllSources[0].id;
     TestUtils.setupUiStore({

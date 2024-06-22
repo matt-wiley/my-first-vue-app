@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type ArticleRecord from "@/models/articleRecord";
-import { useContentStore } from '@/stores/content';
+import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from '@/stores/ui';
 
 const uiState = useUIStateStore();

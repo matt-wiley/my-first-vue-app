@@ -4,8 +4,7 @@ import SampleDataUtils from "@/utils/sampleDataUtils";
 import TestUtils from "@/utils/testUtils";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, expect, it } from "vitest";
-import { useContentStore } from "../content";
-
+import { useInMemoryContentStore } from "../inMemoryContent";
 
 
 describe("content", () => {
@@ -13,7 +12,7 @@ describe("content", () => {
   it("adds a source", async () => {
     const piniaForTest = setActivePinia(createPinia());
     const feedUrlForTest = TestUtils.getFeedUrlForTest()
-    const contentStore = useContentStore(piniaForTest);
+    const contentStore = useInMemoryContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = feedUrlForTest
     const sourceRecord = await contentStore.addSource(source);
@@ -29,7 +28,7 @@ describe("content", () => {
 
   it("throws an error when adding a source with an empty feed URL", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const contentStore = useContentStore(piniaForTest);
+    const contentStore = useInMemoryContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = "";
     try {
@@ -40,10 +39,33 @@ describe("content", () => {
     }
   });
 
+  it("gets a source  by its id", async () => {
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, sourceARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
+
+    expect(contentStore.getSource(sourceARecord.id)).toBe(sourceARecord);
+    expect(contentStore.getSource("nonexistent")).toBe(undefined);
+    expect(contentStore.getSource(undefined)).toBe(undefined);
+  });
+
+  it("deletes a source", async () => {
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, sourceARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
+    contentStore.deleteSource(sourceARecord);
+    expect(contentStore.sources).not.toContain(sourceARecord);
+    expect(contentStore.getArticlesForSourceId(sourceARecord.id)).toEqual([]);
+  });
+
   it("adds an article", async () => {
     const piniaForTest = setActivePinia(createPinia());
     const feedUrlForTest = TestUtils.getFeedUrlForTest()
-    const contentStore = useContentStore(piniaForTest);
+    const contentStore = useInMemoryContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = feedUrlForTest
     const sourceRecord = await contentStore.addSource(source);
@@ -64,27 +86,60 @@ describe("content", () => {
     expect(contentStore.articles).toContain(articleRecord);
   });
 
-  it("tombstones a non-Stale article on delete", async () => {
+  it("deletes articles by 'tombstoning' articles that are not Stale", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, articleARecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
     contentStore.deleteArticle(articleARecord);
+    expect(contentStore.getArticle(articleARecord.id)).toBe(articleARecord);
     expect(articleARecord.isTombstoned).toBe(true);
   });
 
-  it("removes Stale article on delete", async () => {
+  it("deletes articles by removing articles that are Stale", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, articleARecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
     articleARecord.freshness = Freshness.Stale;
     contentStore.deleteArticle(articleARecord);
 
     expect(contentStore.getArticle(articleARecord.id)).toBe(undefined);
     expect(contentStore.getAllArticles).not.toContain(articleARecord);
+  });
 
+  it("deletes articles by id - 'tombstone', not Stale", async () => {
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
+    contentStore.deleteArticleById(articleARecord.id);
+    expect(contentStore.getArticle(articleARecord.id)).toBe(articleARecord);
+    expect(articleARecord.isTombstoned).toBe(true);
+  });
+
+  it("deletes articles by id - remove, Stale", async () => {
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
+    articleARecord.freshness = Freshness.Stale;
+    contentStore.deleteArticleById(articleARecord.id);
+
+    expect(contentStore.getArticle(articleARecord.id)).toBe(undefined);
+    expect(contentStore.getAllArticles).not.toContain(articleARecord);
   });
 
   it("gets all sources", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, sourceARecord, sourceBRecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, sourceARecord, sourceBRecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
 
     expect(contentStore.getAllSources.length).toEqual(2);
     expect(contentStore.getAllSources).toContain(sourceARecord);
@@ -93,7 +148,10 @@ describe("content", () => {
 
   it("gets all articles (all including tombstoned)", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
 
     expect(contentStore.getAllArticles.length).toEqual(3);
     expect(contentStore.getAllArticles).toContain(articleARecord);
@@ -103,7 +161,10 @@ describe("content", () => {
 
   it("gets articles (all not tombstoned)", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
 
     expect(contentStore.getArticles.length).toEqual(2);
     expect(contentStore.getArticles).toContain(articleARecord);
@@ -113,7 +174,10 @@ describe("content", () => {
 
   it("gets articles for source", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, sourceARecord, sourceBRecord, articleARecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, sourceARecord, sourceBRecord, articleARecord, articleCRecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
 
     expect(contentStore.getArticlesForSourceId(sourceARecord.id).length).toEqual(1);
     expect(contentStore.getArticlesForSourceId(sourceARecord.id)).toContain(articleARecord);
@@ -125,9 +189,12 @@ describe("content", () => {
 
   });
 
-  it("gets article", async () => {
+  it("gets an article by its id", async () => {
     const piniaForTest = setActivePinia(createPinia());
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useInMemoryContentStore
+    });
 
     expect(contentStore.getArticle(articleARecord.id)).toBe(articleARecord);
     expect(contentStore.getArticle(articleBRecord.id)).toBe(articleBRecord);

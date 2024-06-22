@@ -32,7 +32,7 @@ jobs:
         with:
           name: Vitest            # Name of the check run which will be created
           path: test-results/junit.xml    # Path to test results
-          reporter: junit             # Format of test results
+          reporter: java-junit             # Format of test results
 
       - name: "Report Coverage"
         if: always()

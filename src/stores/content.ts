@@ -46,6 +46,8 @@ export const useContentStore = defineStore({
         },
         async addArticle(sourceRecord: SourceRecord, article: Article): Promise<ArticleRecord> {
             const articleRecord = {... article} as ArticleRecord;
+            articleRecord.sourceId = sourceRecord.id;
+            
             const sha = await HashUtils.digest(
                 HashAlgo.SHA256,
                 `${articleRecord.sourceId}${articleRecord.title}${articleRecord.link}`
@@ -56,9 +58,6 @@ export const useContentStore = defineStore({
             );
             articleRecord.sha = sha;
             articleRecord.id = `A-${id}`;
-            articleRecord.sourceId = sourceRecord.id;
-            // articleRecord.isTombstoned = SampleDataUtils.randomTombstone(); // FIXME: This is for dev only, remove in production
-            // articleRecord.freshness = SampleDataUtils.randomFreshness(); // FIXME: This is for dev only, remove in production
             this.articles.push(articleRecord);
             return articleRecord;
         },

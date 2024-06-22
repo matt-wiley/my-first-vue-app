@@ -5,8 +5,6 @@ import type ArticleRecord from "@/models/articleRecord";
 import type Article from "@/models/article";
 import type { SourceRecord } from "@/models/sourceRecord";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
-import { SampleDataUtils } from "@/utils/sampleDataUtils";
-import { NumberUtils as nu } from "@/utils/numberUtils";
 import StringUtils from "@/utils/stringUtils";
 
 export const useContentStore = defineStore({
@@ -28,8 +26,8 @@ export const useContentStore = defineStore({
         .filter((a) => !a.isTombstoned)
         .filter((a) => a.sourceId === sourceId);
     },
-    getArticle: (state) => (articleSha: string | null) => {
-      if (articleSha === null) return null;
+    getArticle: (state) => (articleSha: string | undefined) => {
+      if (!articleSha) return undefined;
       return state.articles.find((a) => a.id === articleSha);
     },
   },

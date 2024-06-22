@@ -7,7 +7,7 @@ import { StringUtils as su } from "./stringUtils";
 
 
 
-export class SampleDataUtils {
+export default class SampleDataUtils {
     static randomFreshness() {
         const random = Math.floor(Math.random() * 10);
         if (random < 1) {

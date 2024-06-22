@@ -1,11 +1,10 @@
-import HashUtils, { HashAlgo } from "@/utils/hashUtils";
-import { SampleDataUtils } from "@/utils/sampleDataUtils";
-import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
-import { useContentStore } from "../content";
-import { setActivePinia, createPinia } from "pinia";
-import exp from "constants";
-import StringUtils from "@/utils/stringUtils";
 import Freshness from "@/models/freshness";
+import HashUtils, { HashAlgo } from "@/utils/hashUtils";
+import StringUtils from "@/utils/stringUtils";
+import SampleDataUtils from "@/utils/sampleDataUtils";
+import { createPinia, setActivePinia } from "pinia";
+import { beforeEach, describe, expect, it } from "vitest";
+import { useContentStore } from "../content";
 
 
 const getFeedUrlForTest = () => {
@@ -113,13 +112,13 @@ describe("content", () => {
     expect(contentStore.articles).toContain(articleRecord);
   });
 
-  it("tombstones an article", async () => {
+  it("tombstones a non-Stale article on delete", async () => {
     const { contentStore, articleARecord } = await setupForGetterTests();
     contentStore.deleteArticle(articleARecord);
     expect(articleARecord.isTombstoned).toBe(true);
   });
 
-  it("does not tombstone a stale article", async () => {
+  it("removes Stale article on delete", async () => {
 
     const { contentStore, articleARecord } = await setupForGetterTests();
     articleARecord.freshness = Freshness.Stale;
@@ -180,6 +179,8 @@ describe("content", () => {
     expect(contentStore.getArticle(articleCRecord.id)).toBe(articleCRecord);
 
     expect(contentStore.getArticle("nonexistent")).toBe(undefined);
+
+    expect(contentStore.getArticle(undefined)).toBe(undefined);
 
   });
 

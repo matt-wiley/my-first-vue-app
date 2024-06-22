@@ -1,68 +1,19 @@
 import Freshness from "@/models/freshness";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
-import StringUtils from "@/utils/stringUtils";
 import SampleDataUtils from "@/utils/sampleDataUtils";
+import TestUtils from "@/utils/testUtils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { useContentStore } from "../content";
 
 
-const getFeedUrlForTest = () => {
-  return "https://www.example.com/" + StringUtils.randomStringOfLength(20);
-}
-
-const setupForGetterTests = async () => {
-  // This sets up the following scenario:
-  // 
-  // contentStore:
-  //   sourceARecord:
-  //     articleARecord: active
-  //     articleBRecord: tombstoned
-  //   sourceBRecord:
-  //     articleCRecord: active
-
-  const contentStore = useContentStore();
-
-  const feedAUrlForTest = getFeedUrlForTest();
-  const feedBUrlForTest = getFeedUrlForTest();
-
-  const sourceA = SampleDataUtils.generateSource();
-  sourceA.feedUrl = feedAUrlForTest;
-  const sourceARecord = await contentStore.addSource(sourceA);
-
-  const sourceB = SampleDataUtils.generateSource();
-  sourceB.feedUrl = feedBUrlForTest;
-  const sourceBRecord = await contentStore.addSource(sourceB);
-
-  const articleA = SampleDataUtils.generateArticle();
-  const articleARecord = await contentStore.addArticle(sourceARecord, articleA);
-
-  const articleB = SampleDataUtils.generateArticle();
-  const articleBRecord = await contentStore.addArticle(sourceARecord, articleB);
-  contentStore.deleteArticle(articleBRecord);
-
-  const articleC = SampleDataUtils.generateArticle();
-  const articleCRecord = await contentStore.addArticle(sourceBRecord, articleC);
-
-  return {
-    contentStore: contentStore,
-    sourceARecord: sourceARecord,
-    sourceBRecord: sourceBRecord,
-    articleARecord: articleARecord,
-    articleBRecord: articleBRecord,
-    articleCRecord: articleCRecord
-  };
-}
 
 describe("content", () => {
 
-  beforeEach(() => {
-    setActivePinia(createPinia());
-  });
-
   it("adds a source", async () => {
-    const feedUrlForTest = getFeedUrlForTest()
-    const contentStore = useContentStore();
+    const piniaForTest = setActivePinia(createPinia());
+    const feedUrlForTest = TestUtils.getFeedUrlForTest()
+    const contentStore = useContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = feedUrlForTest
     const sourceRecord = await contentStore.addSource(source);
@@ -77,8 +28,8 @@ describe("content", () => {
   });
 
   it("throws an error when adding a source with an empty feed URL", async () => {
-
-    const contentStore = useContentStore();
+    const piniaForTest = setActivePinia(createPinia());
+    const contentStore = useContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = "";
     try {
@@ -90,8 +41,9 @@ describe("content", () => {
   });
 
   it("adds an article", async () => {
-    const feedUrlForTest = getFeedUrlForTest()
-    const contentStore = useContentStore();
+    const piniaForTest = setActivePinia(createPinia());
+    const feedUrlForTest = TestUtils.getFeedUrlForTest()
+    const contentStore = useContentStore(piniaForTest);
     const source = SampleDataUtils.generateSource();
     source.feedUrl = feedUrlForTest
     const sourceRecord = await contentStore.addSource(source);
@@ -113,14 +65,15 @@ describe("content", () => {
   });
 
   it("tombstones a non-Stale article on delete", async () => {
-    const { contentStore, articleARecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore(piniaForTest);
     contentStore.deleteArticle(articleARecord);
     expect(articleARecord.isTombstoned).toBe(true);
   });
 
   it("removes Stale article on delete", async () => {
-
-    const { contentStore, articleARecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord } = await TestUtils.setupContentStore(piniaForTest);
     articleARecord.freshness = Freshness.Stale;
     contentStore.deleteArticle(articleARecord);
 
@@ -130,7 +83,8 @@ describe("content", () => {
   });
 
   it("gets all sources", async () => {
-    const { contentStore, sourceARecord, sourceBRecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, sourceARecord, sourceBRecord } = await TestUtils.setupContentStore(piniaForTest);
 
     expect(contentStore.getAllSources.length).toEqual(2);
     expect(contentStore.getAllSources).toContain(sourceARecord);
@@ -138,7 +92,8 @@ describe("content", () => {
   });
 
   it("gets all articles (all including tombstoned)", async () => {
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
 
     expect(contentStore.getAllArticles.length).toEqual(3);
     expect(contentStore.getAllArticles).toContain(articleARecord);
@@ -147,8 +102,8 @@ describe("content", () => {
   });
 
   it("gets articles (all not tombstoned)", async () => {
-
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
 
     expect(contentStore.getArticles.length).toEqual(2);
     expect(contentStore.getArticles).toContain(articleARecord);
@@ -157,7 +112,8 @@ describe("content", () => {
   });
 
   it("gets articles for source", async () => {
-    const { contentStore, sourceARecord, sourceBRecord, articleARecord, articleCRecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, sourceARecord, sourceBRecord, articleARecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
 
     expect(contentStore.getArticlesForSourceId(sourceARecord.id).length).toEqual(1);
     expect(contentStore.getArticlesForSourceId(sourceARecord.id)).toContain(articleARecord);
@@ -170,18 +126,14 @@ describe("content", () => {
   });
 
   it("gets article", async () => {
-    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await setupForGetterTests();
+    const piniaForTest = setActivePinia(createPinia());
+    const { contentStore, articleARecord, articleBRecord, articleCRecord } = await TestUtils.setupContentStore(piniaForTest);
 
     expect(contentStore.getArticle(articleARecord.id)).toBe(articleARecord);
-
     expect(contentStore.getArticle(articleBRecord.id)).toBe(articleBRecord);
-
     expect(contentStore.getArticle(articleCRecord.id)).toBe(articleCRecord);
-
     expect(contentStore.getArticle("nonexistent")).toBe(undefined);
-
     expect(contentStore.getArticle(undefined)).toBe(undefined);
-
   });
 
 });

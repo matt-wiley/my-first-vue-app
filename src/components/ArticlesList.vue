@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Article } from '@/models/article';
+import type ArticleRecord from "@/models/articleRecord";
 import { useContentStore } from '@/stores/content';
 import { useUIStateStore } from '@/stores/ui';
 
@@ -35,7 +35,7 @@ function hasArticles() {
  * @returns The list of articles to display, sorted by date descending
  */
 function getPresentableArticles() {
-    const _dateDescending = (a: Article, b: Article) => b.date.getTime() - a.date.getTime();
+    const _dateDescending = (a: ArticleRecord, b: ArticleRecord) => b.date.getTime() - a.date.getTime();
     /* 
      * We need to slice the array to make a copy of it, otherwise the sort will modify the original array
      * causing the UI to rerender every time the list is sorted. This leads to a warning in the console about

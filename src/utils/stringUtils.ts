@@ -6,6 +6,16 @@ import { LOREM_IPSUM, SHUFFLE_LOREM_IPSUM } from "./loremIpsum";
 export class StringUtils {
 
     /**
+     * Determines if a string is empty.
+     *
+     * @param str The string to check.
+     * @returns True if the string is empty, false otherwise.
+     */
+    static isEmpty(str: string | null | undefined): boolean {
+        return str === null || str === undefined || str === "";
+    }
+
+    /**
      * Generates a random string of the specified length.
      *
      * @param length The length of the string to generate.

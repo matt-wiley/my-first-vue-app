@@ -12,5 +12,6 @@
         ]
     },
     "isolatedModules": false,
+    "ignoreDeprecations": "5.0", // Added to ignore deprecation warnings
   }
 }

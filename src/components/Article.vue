@@ -22,7 +22,7 @@ function presentDate(date: Date | null | undefined) {
 
 <template>
   <div class="ma0 pa0 w-100 h-100 overflow-x-hidden overflow-y-scroll" v-bind:articleId="uiState.selectedArticleId">
-    <section class="" v-if="uiState.selectedArticleId">
+    <section id="article-container" v-if="uiState.selectedArticleId">
       <div class="br2 ml4 mt5 mr4 pa4 bg-white h-100">
         <h2 id="article-title" class="pb2">{{ getSelectedArticle()?.title }}</h2>
         <div class="pb4">
@@ -43,7 +43,7 @@ function presentDate(date: Date | null | undefined) {
         <div id="article-footer-whitespace" class="vh-25 w-100">&nbsp;</div>
       </div>
     </section>
-    <section v-else>
+    <section id="no-article-container" v-else>
       <div class="br2 ml4 mt5 mr4 pa4 h-100">
         <p id="no-article" class="tc">No article selected</p>
       </div>

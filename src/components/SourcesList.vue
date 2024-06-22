@@ -27,20 +27,25 @@ function handleStyles(sourceId?: string) {
 </script>
 
 <template>
-  <section>
+  <section v-if="content.getAllSources.length > 0" id="sources-list-container">
     <h3>Sources</h3>
     <ul class="list ma0 pa0">
         <li class="list-item ma1 pa1 pl2 br2 pointer"
+            id="S-all"
             :class="handleStyles()"
             @click="handleClick()"
             >All</li>
         <li class="list-item ma1 pa1 pl2 br2 pointer"
+            :id="source.id"
             :class="handleStyles(source.id)"
             @click="handleClick(source.id)"
             v-for="source in content.getAllSources" 
             :key="source.id"
             >{{ source.title }}</li>
     </ul>
+  </section>
+  <section v-else id="no-sources-container">
+    <p>Add a source to get started!</p>
   </section>
 </template>
 

@@ -12,7 +12,7 @@ export default class TestUtils {
     return "https://www.example.com/" + StringUtils.randomStringOfLength(20);
   }
   
-  static async setupContentStore(piniaForTest: any) {
+  static async setupContentStore(config: { piniaForTest: any; }) {
     // This sets up the following scenario:
     // 
     // contentStore:
@@ -22,7 +22,7 @@ export default class TestUtils {
     //   sourceBRecord:
     //     articleCRecord: active
   
-    const contentStore = useContentStore(piniaForTest);
+    const contentStore = useContentStore(config.piniaForTest);
     contentStore.sources = [];
     contentStore.articles = [];
   
@@ -57,9 +57,11 @@ export default class TestUtils {
     };
   }
   
-  static setupUiStore(piniaForTest: any, selectedArticleId: string | undefined = undefined) {
-    const uiStateStore = useUIStateStore(piniaForTest);
-    uiStateStore.setSelectedArticleId(selectedArticleId);
+  static setupUiStore(
+    config: { piniaForTest: any; selectedSourceId?: string | undefined; selectedArticleId?: string | undefined; }) {
+    const uiStateStore = useUIStateStore(config.piniaForTest);
+    uiStateStore.setSelectedSourceId(config.selectedSourceId);
+    uiStateStore.setSelectedArticleId(config.selectedArticleId);
     return {
       uiStateStore: uiStateStore
     }

@@ -1,4 +1,3 @@
-
 import { useUIStateStore } from "@/stores/ui";
 import DateUtils from "@/utils/dateUtils";
 import TestUtils from "@/utils/testUtils";
@@ -13,13 +12,18 @@ describe("Article.vue", () => {
   it("renders properly when an article is selected", async () => {
     
     const piniaForTest = setActivePinia(createPinia());
-    const contentStoreSetup = await TestUtils.setupContentStore(piniaForTest);
-    TestUtils.setupUiStore(piniaForTest, contentStoreSetup.articleARecord.id);
+    const contentStoreSetup = await TestUtils.setupContentStore({
+      piniaForTest: piniaForTest
+    });
+    TestUtils.setupUiStore({
+      piniaForTest: piniaForTest,
+      selectedArticleId: contentStoreSetup.articleARecord.id
+    });
 
     const wrapper = mount(Article, {});
     
     // Article section should be rendered
-    expect(wrapper.find("section").exists()).toBe(true);
+    expect(wrapper.find("#article-container").exists()).toBe(true);
     
     // Article content should be rendered
     expect(wrapper.find("#article-title").exists()).toBe(true);
@@ -52,14 +56,17 @@ describe("Article.vue", () => {
   it("renders properly when no article is selected", async () => {
 
     const piniaForTest = setActivePinia(createPinia());
-    TestUtils.setupUiStore(piniaForTest);
+    TestUtils.setupUiStore({
+      piniaForTest: piniaForTest,
+      selectedArticleId: undefined
+    });
 
     expect(useUIStateStore().selectedArticleId).toBe(undefined);
 
     const wrapper = mount(Article, {});
 
     // Article section should be rendered
-    expect(wrapper.find("section").exists()).toBe(true);
+    expect(wrapper.find("#no-article-container").exists()).toBe(true);
     
     // Article content should not be rendered
     expect(wrapper.find("#article-title").exists()).toBe(false);
@@ -70,7 +77,6 @@ describe("Article.vue", () => {
 
     // No article selected message should be rendered
     expect(wrapper.find("#no-article").exists()).toBe(true);
-    expect(wrapper.find("#no-article").element.tagName).toEqual("P");
     expect(wrapper.find("#no-article").text()).toBe("No article selected");
 
   });

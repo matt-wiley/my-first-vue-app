@@ -11,7 +11,7 @@ const _uiStateStoreDefinition = (() => {
     return defineStore({
         id: "ui",
 
-        hydrate: (currentState, initialState) => {
+        hydrate: (currentState) => {
             // @ts-expect-error: https://github.com/microsoft/TypeScript/issues/43826
             currentState.selectedSourceId = useLocalStorage<OptionalString>(KEY_SELECTED_SOURCE_ID, undefined)
             // @ts-expect-error: https://github.com/microsoft/TypeScript/issues/43826

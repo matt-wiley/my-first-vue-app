@@ -1,4 +1,3 @@
-import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from "@/stores/ui";
 import SampleDataUtils from "./sampleDataUtils";
 import StringUtils from "./stringUtils";
@@ -12,7 +11,10 @@ export default class TestUtils {
     return "https://www.example.com/" + StringUtils.randomStringOfLength(20);
   }
   
-  static async setupContentStore(config: { piniaForTest: any; }) {
+  static async setupContentStore(config: { 
+    piniaForTest: any;
+    contentStoreLoader: (pinia: any) => any;
+  }) {
     // This sets up the following scenario:
     // 
     // contentStore:
@@ -22,7 +24,7 @@ export default class TestUtils {
     //   sourceBRecord:
     //     articleCRecord: active
   
-    const contentStore = useContentStore(config.piniaForTest);
+    const contentStore = config.contentStoreLoader(config.piniaForTest);
     contentStore.sources = [];
     contentStore.articles = [];
   

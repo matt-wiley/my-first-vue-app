@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ValidationUtils as vu } from "@/utils/validationUtils";
-import { useContentStore } from "@/stores/content";
 import { reactive } from "vue";
 import FeedParserService from "@/services/feedParserService";
+import { useContentStore } from "@/stores/content";
 
 const feedParser = FeedParserService.getInstance();
 const content = useContentStore();

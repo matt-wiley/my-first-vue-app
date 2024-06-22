@@ -5,6 +5,7 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, expect, it } from "vitest";
 import Article from "../Article.vue";
+import { useContentStore } from "@/stores/content";
 
 
 describe("Article.vue", () => {
@@ -13,7 +14,8 @@ describe("Article.vue", () => {
     
     const piniaForTest = setActivePinia(createPinia());
     const contentStoreSetup = await TestUtils.setupContentStore({
-      piniaForTest: piniaForTest
+      piniaForTest: piniaForTest,
+      contentStoreLoader: useContentStore
     });
     TestUtils.setupUiStore({
       piniaForTest: piniaForTest,

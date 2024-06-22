@@ -62,6 +62,17 @@ export const useContentStore = defineStore({
             this.articles.push(articleRecord);
             return articleRecord;
         },
+        async deleteArticle(articleRecord: ArticleRecord) {
+            if (articleRecord.freshness !== "Stale") {
+              articleRecord.isTombstoned = true;
+            }
+            else {
+              const index = this.articles.indexOf(articleRecord);
+              if (index > -1) {
+                this.articles.splice(index, 1);
+              }
+            }
+        },
         async initSampleData(maxSources = 10, maxArticlesPerSource = 10) {
             // Clear existing data
             this.sources = [];

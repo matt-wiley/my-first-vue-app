@@ -52,10 +52,11 @@ export class SampleDataUtils {
             author: randomAuthor,
             link: `https://www.example.com/article/${randomArticleSlug}`,
             content: su.wordsOfloremIpsum(randomNumberOfContentWords),
-            publishedDate: du.randomDate(
+            date: du.randomDate(
                 new Date(2021, 0, 1),
                 new Date()
             ),
         };
     }
+
 }

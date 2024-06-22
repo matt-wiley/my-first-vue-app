@@ -18,4 +18,15 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  test: {
+    include: ["**/__test__/**/*.spec.ts"],
+    reporters: ["junit", "json", "default"],
+    outputFile: {
+      junit: "test-results/junit.xml",
+      json: "test-results/results.json",
+    },
+    coverage: {
+      reporter: ["text","json-summary","json"],
+    }
+  },
 });

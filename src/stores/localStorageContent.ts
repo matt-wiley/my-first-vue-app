@@ -16,7 +16,7 @@ const _contentStoreDefinition = (() => {
   const KEY_CONTENT_ENTRIES: string = "mfva-rss.content.entries";
 
   return defineStore({
-    id: "content",
+    id: "localStorageContent",
 
     hydrate: (currentState: any) => {
       currentState.sourcesKeys = useLocalStorage<string[]>(KEY_SOURCE_IDS_LIST, []);

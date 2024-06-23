@@ -6,8 +6,9 @@ import HashUtils, { HashAlgo } from "@/utils/hashUtils";
 import StringUtils from "@/utils/stringUtils";
 import { defineStore } from "pinia";
 
+
 export const useInMemoryContentStore = defineStore({
-  id: "content",
+  id: "inMemorycontent",
 
   state: () => ({
     sources: [],

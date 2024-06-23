@@ -37,6 +37,19 @@ import Freshness from "@/models/freshness";
   
     });
   
+    it("throws an error when adding a source with the same feed URL as an existing source", async () => {
+      const piniaForTest = setActivePinia(createPinia());
+      const contentStore = targetContentStore(piniaForTest);
+      const source = SampleDataUtils.generateSource();
+      await contentStore.addSource(source);
+      try {
+        await contentStore.addSource(source);
+        expect(true).toBe(false); // should not reach this line
+      } catch (e: any) {
+        expect(e.message).toEqual("Found existing source with the same feed URL");
+      }
+    });
+
     it("throws an error when adding a source with an empty feed URL", async () => {
       const piniaForTest = setActivePinia(createPinia());
       const contentStore = targetContentStore(piniaForTest);
@@ -109,6 +122,21 @@ import Freshness from "@/models/freshness";
       expect(contentStore.getAllArticles).toContain(articleRecord);
     });
   
+    it("throws an error when adding an article with the same calculated sha value", async () => {
+      const piniaForTest = setActivePinia(createPinia());
+      const contentStore = targetContentStore(piniaForTest);
+      const source = SampleDataUtils.generateSource();
+      const sourceRecord = await contentStore.addSource(source);
+      const article = SampleDataUtils.generateArticle();
+      await contentStore.addArticle(sourceRecord, article);
+      try {
+        await contentStore.addArticle(sourceRecord, article);
+        expect(true).toBe(false);
+      } catch (e: any) {
+        expect(e.message).toEqual("Found existing article with the same SHA");
+      }
+    });
+
     it("deletes articles by 'tombstoning' articles that are not Stale", async () => {
       const piniaForTest = setActivePinia(createPinia());
       const { contentStore, articleARecord } = await TestUtils.setupContentStore({

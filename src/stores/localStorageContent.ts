@@ -64,6 +64,12 @@ const _contentStoreDefinition = (() => {
         this.sourcesKeys.push(sourceKey);
       },
       async addSource(source: Source): Promise<SourceRecord> {
+
+        const existingSourceWithURL = this.getAllSources.find((s: SourceRecord) => s.feedUrl === source.feedUrl)
+        if (existingSourceWithURL) {
+          throw new Error("Found existing source with the same feed URL");
+        }
+
         const sourceRecord = { ...source } as SourceRecord;
         if (StringUtils.isEmpty(sourceRecord.feedUrl)) {
           throw new Error("Feed URL is required");
@@ -98,17 +104,23 @@ const _contentStoreDefinition = (() => {
         this.articlesKeys.push(articleKey);
       },
       async addArticle(sourceRecord: SourceRecord, article: ArticleRecord): Promise<ArticleRecord> {
-        const articleRecord = { ...article } as ArticleRecord;
-        articleRecord.sourceId = sourceRecord.id;
 
         const sha = await HashUtils.digest(
           HashAlgo.SHA256,
-          `${articleRecord.sourceId}${articleRecord.title}${articleRecord.link}`
+          `${sourceRecord.id}${article.title}${article.link}`
         );
         const id = await HashUtils.digest(
           HashAlgo.SHA1,
           sha
         );
+  
+        const existingArticleWithSha = this.getAllArticles.find((a: ArticleRecord) => a.sha === sha);
+        if (existingArticleWithSha) {
+          throw new Error("Found existing article with the same SHA");
+        }
+
+        const articleRecord = { ...article } as ArticleRecord;
+        articleRecord.sourceId = sourceRecord.id;
         articleRecord.sha = sha;
         articleRecord.id = `A-${id}`;
         this.addArticleKey(articleRecord.id);

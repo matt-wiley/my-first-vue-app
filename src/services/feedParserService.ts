@@ -21,7 +21,10 @@ export default class FeedParserService {
         return FeedParserService.instance;
     }
 
-    public async fetchAndParseFeed(feedUrl: string): Promise<ParsedFeed> {
+    public async fetchAndParseFeed(feedUrl: string | null | undefined): Promise<ParsedFeed> {
+        if (!feedUrl) {
+            throw new Error("Feed URL is required");
+        }
         const feed = await FeedFetchService.getInstance().fetchFeed(feedUrl);
         const result = this.parseFeed(feed);
         result.source.feedUrl = feedUrl;

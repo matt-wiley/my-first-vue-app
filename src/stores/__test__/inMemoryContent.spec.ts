@@ -23,7 +23,7 @@ describe("content", () => {
     expect(sourceRecord.id).toEqual(`S-${await HashUtils.digest(HashAlgo.SHA1, feedUrlForTest)}`);
     expect(sourceRecord.url).toEqual(source.url);
 
-    expect(contentStore.sources).toContain(sourceRecord);
+    expect(contentStore.getAllSources).toContain(sourceRecord);
   });
 
   it("throws an error when adding a source with an empty feed URL", async () => {
@@ -58,7 +58,7 @@ describe("content", () => {
       contentStoreLoader: useInMemoryContentStore
     });
     contentStore.deleteSource(sourceARecord);
-    expect(contentStore.sources).not.toContain(sourceARecord);
+    expect(contentStore.getAllSources).not.toContain(sourceARecord);
     expect(contentStore.getArticlesForSourceId(sourceARecord.id)).toEqual([]);
   });
 

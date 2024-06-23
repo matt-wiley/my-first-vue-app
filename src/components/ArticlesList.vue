@@ -2,6 +2,7 @@
 import type ArticleRecord from "@/models/articleRecord";
 import { useContentStore } from "@/stores/content";
 import { useUIStateStore } from '@/stores/ui';
+import Article from "./Article.vue";
 
 const uiState = useUIStateStore();
 const content = useContentStore();
@@ -12,7 +13,7 @@ const content = useContentStore();
  * 
  * @returns The filtered list of articles to display
  */
-function getArticlesForSelectedSource() {
+function getArticlesForSelectedSource(): ArticleRecord[] {
     if (uiState.getSelectedSourceId) {
         return content.getArticlesForSourceId(uiState.getSelectedSourceId);
     } else {
@@ -25,7 +26,7 @@ function getArticlesForSelectedSource() {
  * 
  * @returns True if there are articles to display, false otherwise
  */
-function hasArticles() {
+function hasArticles(): boolean {
     return getArticlesForSelectedSource().slice().length > 0
 }
 
@@ -34,8 +35,12 @@ function hasArticles() {
  * 
  * @returns The list of articles to display, sorted by date descending
  */
-function getPresentableArticles() {
-    const _dateDescending = (a: ArticleRecord, b: ArticleRecord) => b.date.getTime() - a.date.getTime();
+function getPresentableArticles(): ArticleRecord[] {
+    const _dateDescending = (a: ArticleRecord, b: ArticleRecord) => {
+      const bTime = ( typeof b.date === 'string' ? new Date(b.date) : b.date ).getTime();
+      const aTime = ( typeof a.date === 'string' ? new Date(a.date) : a.date ).getTime();
+      return bTime - aTime;
+    }
     /* 
      * We need to slice the array to make a copy of it, otherwise the sort will modify the original array
      * causing the UI to rerender every time the list is sorted. This leads to a warning in the console about

@@ -6,6 +6,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { describe, expect, it } from "vitest";
 import SourcesList from "../SourcesList.vue";
 import { useContentStore } from "@/stores/content";
+import { useLocalStorageContentStore } from "@/stores/localStorageContent";
 
 
 describe("SourcesList.vue", () => {
@@ -21,10 +22,10 @@ describe("SourcesList.vue", () => {
 
     expect(wrapper.find("#sources-list-container").exists()).toBe(true);
 
-    expect(wrapper.findAll("li").length).toBe(contentStoreSetup.contentStore.sources.length + 1);
+    expect(wrapper.findAll("li").length).toBe(contentStoreSetup.contentStore.getAllSources.length + 1);
     expect(wrapper.findAll("li").at(0).text()).toBe("All");
-    expect(wrapper.findAll("li").at(1).text()).toBe(contentStoreSetup.contentStore.sources[0].title);
-    expect(wrapper.findAll("li").at(2).text()).toBe(contentStoreSetup.contentStore.sources[1].title);
+    expect(wrapper.findAll("li").at(1).text()).toBe(contentStoreSetup.contentStore.getAllSources[0].title);
+    expect(wrapper.findAll("li").at(2).text()).toBe(contentStoreSetup.contentStore.getAllSources[1].title);
 
   });
 
@@ -51,10 +52,10 @@ describe("SourcesList.vue", () => {
     expect(wrapper.find("h3").exists()).toBe(true);
     expect(wrapper.find("h3").text()).toBe("Sources");
 
-    expect(wrapper.findAll("li").length).toBe(contentStoreSetup.contentStore.sources.length + 1);
+    expect(wrapper.findAll("li").length).toBe(contentStoreSetup.contentStore.getAllSources.length + 1);
     expect(wrapper.findAll("li").at(0).text()).toBe("All");
-    expect(wrapper.findAll("li").at(1).text()).toBe(contentStoreSetup.contentStore.sources[0].title);
-    expect(wrapper.findAll("li").at(2).text()).toBe(contentStoreSetup.contentStore.sources[1].title);
+    expect(wrapper.findAll("li").at(1).text()).toBe(contentStoreSetup.contentStore.getAllSources[0].title);
+    expect(wrapper.findAll("li").at(2).text()).toBe(contentStoreSetup.contentStore.getAllSources[1].title);
 
     // LI for "All" should be idle and not selected
     expect(wrapper.findAll("li").at(0).classes()).not.toContain("selected");
@@ -74,6 +75,8 @@ describe("SourcesList.vue", () => {
   it("renders properly when no sources are available", async () => {
 
     const piniaForTest = setActivePinia(createPinia());
+    const contentStore = useContentStore(piniaForTest);
+    contentStore.clearAll();
     TestUtils.setupUiStore({
       piniaForTest: piniaForTest
     });

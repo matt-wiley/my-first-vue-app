@@ -1,7 +1,7 @@
 import type Article from "@/models/article";
 import type ArticleRecord from "@/models/articleRecord";
 import type Source from "@/models/source";
-import type { SourceRecord } from "@/models/sourceRecord";
+import type SourceRecord from "@/models/sourceRecord";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
 import StringUtils from "@/utils/stringUtils";
 import { defineStore } from "pinia";
@@ -96,6 +96,11 @@ export const useInMemoryContentStore = defineStore({
       if (articleRecord) {
         this.deleteArticle(articleRecord);
       }
+    },
+
+    async clearAll() {
+      this.sources = [];
+      this.articles = [];
     },
   },
 });

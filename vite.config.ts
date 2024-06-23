@@ -20,7 +20,7 @@ export default defineConfig({
   },
   test: {
     include: ["**/__test__/**/*.spec.ts"],
-    reporters: ["junit", "json", "default"],
+    reporters: ["junit", "json", "verbose"],
     outputFile: {
       junit: "test-results/junit.xml",
       json: "test-results/results.json",

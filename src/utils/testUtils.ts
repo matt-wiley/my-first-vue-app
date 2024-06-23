@@ -25,8 +25,7 @@ export default class TestUtils {
     //     articleCRecord: active
   
     const contentStore = config.contentStoreLoader(config.piniaForTest);
-    contentStore.sources = [];
-    contentStore.articles = [];
+    contentStore.clearAll();
   
     const feedAUrlForTest = TestUtils.getFeedUrlForTest();
     const feedBUrlForTest = TestUtils.getFeedUrlForTest();

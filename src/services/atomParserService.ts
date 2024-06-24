@@ -1,32 +1,29 @@
+import type { OptionalString, Optional } from "../utils/optionalTypeUtils"; 
 import type { ParsedFeed } from "./feedParserService";
 
-type OptionalText = string | undefined;
-type OptionalLink = string | undefined;
-type OptionalPerson = Person | undefined;
-
 interface Person {
-    name: OptionalText;
-    email: OptionalText;
-    uri: OptionalText;
+    name: OptionalString;
+    email: OptionalString;
+    uri: OptionalString;
 }
 
 interface AtomSource {
-    id: OptionalText;
-    title: OptionalText;
+    id: OptionalString;
+    title: OptionalString;
     updated: Date;
-    links?: OptionalLink[];
-    description?: OptionalText;
-    authors?: OptionalPerson[];
+    links?: OptionalString[];
+    description?: OptionalString;
+    authors?: Optional<Person>[];
 }
 
 interface AtomArticle {
-    id: OptionalText;
-    title: OptionalText;
+    id: OptionalString;
+    title: OptionalString;
     updated: Date;
-    authors?: OptionalPerson[];
-    content?: OptionalText;
-    links?: OptionalLink[];
-    summary?: OptionalText;
+    authors?: Optional<Person>[];
+    content?: OptionalString;
+    links?: OptionalString[];
+    summary?: OptionalString;
     // source?: Element;
 }
 
@@ -84,7 +81,7 @@ export default class AtomParserService {
     }
 
 
-    public static parseFeedAndTransform(feed: Document): ParsedFeed {
+    public static parseAndTransformFeed(feed: Document): ParsedFeed {
         const parsedAtomFeed = AtomParserService.parseFeed(feed);
         return AtomParserService.transformAsGeneralParsedFeed(parsedAtomFeed);
     }
@@ -108,10 +105,10 @@ export default class AtomParserService {
         return { source, articles };
     }
 
-    private static generalizeAuthor(sourceAuthors: OptionalPerson[] | undefined, articleAuthors: OptionalPerson[] | undefined): OptionalText {
-        let author: OptionalText = undefined;
+    private static generalizeAuthor(sourceAuthors: Optional<Person>[] | undefined, articleAuthors: Optional<Person>[] | undefined): OptionalString {
+        let author: OptionalString = undefined;
 
-        const buildAuthorLink = (person: OptionalPerson) => {
+        const buildAuthorLink = (person: Optional<Person>) => {
             let link: string | undefined = "";
             if (person?.uri) {
                 link = `<a href="${person.uri}">${person.name}</a>`;
@@ -189,7 +186,7 @@ export default class AtomParserService {
      * @throws An error if the ID field is not found
      * 
      */
-    private static parseIdFromEntry(entry: Element): OptionalText {
+    private static parseIdFromEntry(entry: Element): OptionalString {
         const idTag = entry.querySelectorAll(`${AtomParserService.ARTICLE_ID_TAG}`);
         if (idTag.length > 0) {
             return AtomParserService.parseTextConstruct(idTag[0]);
@@ -208,7 +205,7 @@ export default class AtomParserService {
      * @throws An error if the title field is not found
      * 
      */
-    private static parseTitleFromEntry(entry: Element): OptionalText {
+    private static parseTitleFromEntry(entry: Element): OptionalString {
         const titleTag = entry.querySelectorAll(`${AtomParserService.ARTICLE_TITLE_TAG}`);
         if (titleTag.length > 0) {
             return AtomParserService.parseTextConstruct(titleTag[0]);
@@ -247,8 +244,8 @@ export default class AtomParserService {
      * @param article The Atom entry DOM Element to parse
      * @returns An array of optional Person objects representing the authors of the entry
      */
-    private static parseAuthorFromEntry(entry: Element): OptionalPerson[] | undefined {
-        let authors: OptionalPerson[] = [];
+    private static parseAuthorFromEntry(entry: Element): Optional<Person>[] | undefined {
+        let authors: Optional<Person>[] = [];
 
         const authorTags = entry.querySelectorAll(`${AtomParserService.AUTHOR_TAG}`)
         if (authorTags.length > 0) {
@@ -272,7 +269,7 @@ export default class AtomParserService {
      * @param article The Atom entry DOM Element to parse
      * @returns An optional string representing the content of the entry
      */
-    private static parseContentFromEntry(entry: Element): OptionalText {
+    private static parseContentFromEntry(entry: Element): OptionalString {
         const contentTag = entry.querySelectorAll(`${AtomParserService.ARTICLE_CONTENT_TAG}`);
         if (contentTag.length > 0) {
             return AtomParserService.parseTextConstruct(contentTag[0]);
@@ -286,7 +283,7 @@ export default class AtomParserService {
      * @param article The Atom entry DOM Element to parse
      * @returns An optional string representing the summary of the entry
      */
-    private static parseSummaryFromEntry(entry: Element): OptionalText {
+    private static parseSummaryFromEntry(entry: Element): OptionalString {
         const summaryTag = entry.querySelectorAll(`${AtomParserService.ARTICLE_SUMMARY_TAG}`);
         if (summaryTag.length > 0) {
             return AtomParserService.parseTextConstruct(summaryTag[0]);
@@ -300,7 +297,7 @@ export default class AtomParserService {
      * @param article The Atom entry DOM Element to parse
      * @returns An array of strings representing the link of the entry
      */
-    private static parseLinksFromEntry(entry: Element): OptionalLink[] | undefined {
+    private static parseLinksFromEntry(entry: Element): OptionalString[] | undefined {
         const linkTags = entry.querySelectorAll(`${AtomParserService.ARTICLE_LINK_TAG}`);
         if (linkTags.length > 0) {
             return Array.from(linkTags).map((link) => AtomParserService.parseLinkConstruct(link));
@@ -349,7 +346,7 @@ export default class AtomParserService {
      * @throws An error if the ID field is not found
      * 
      */
-    private static parseIdFromFeed(feed: Document): OptionalText {
+    private static parseIdFromFeed(feed: Document): OptionalString {
         const idTag = feed.querySelectorAll(`${AtomParserService.SOURCE_TAG} > ${AtomParserService.SOURCE_ID}`);
         if (idTag.length > 0) {
             return AtomParserService.parseTextConstruct(idTag[0]);
@@ -367,7 +364,7 @@ export default class AtomParserService {
      * @throws An error if the title field is not found
      * 
      */
-    private static parseTitleFromFeed(feed: Document): OptionalText {
+    private static parseTitleFromFeed(feed: Document): OptionalString {
         const titleTag = feed.querySelectorAll(`${AtomParserService.SOURCE_TAG} > ${AtomParserService.SOURCE_TITLE_TAG}`);
         if (titleTag.length > 0) {
             return AtomParserService.parseTextConstruct(titleTag[0]);
@@ -406,7 +403,7 @@ export default class AtomParserService {
      * @returns An optional string representing the link of the feed
      * 
      */
-    private static parseLinksFromFeed(feed: Document): OptionalLink[] | undefined {
+    private static parseLinksFromFeed(feed: Document): OptionalString[] | undefined {
         const linkTags = feed.querySelectorAll(`${AtomParserService.SOURCE_TAG} > ${AtomParserService.SOURCE_SITE_URL_TAG}`);
         if (linkTags.length > 0) {
             return Array.from(linkTags).map((link) => AtomParserService.parseLinkConstruct(link));
@@ -420,7 +417,7 @@ export default class AtomParserService {
      * @returns An optional string representing the description of the feed
      * 
      */
-    private static parseDescriptionFromFeed(feed: Document): OptionalText {
+    private static parseDescriptionFromFeed(feed: Document): OptionalString {
         const descriptionTag = feed.querySelectorAll(`${AtomParserService.SOURCE_TAG} > ${AtomParserService.SOURCE_DESCRIPTION_TAG}`);
         if (descriptionTag.length > 0) {
             return AtomParserService.parseTextConstruct(descriptionTag[0]);
@@ -435,8 +432,8 @@ export default class AtomParserService {
      * @returns An array of optional Person objects representing the authors of the feed
      * 
      */
-    private static parseAuthorFromFeed(feed: Document): OptionalPerson[] | undefined {
-        let authors: OptionalPerson[] = [];
+    private static parseAuthorFromFeed(feed: Document): Optional<Person>[] | undefined {
+        let authors: Optional<Person>[] = [];
 
         const authorTags = feed.querySelectorAll(`${AtomParserService.SOURCE_TAG} > ${AtomParserService.AUTHOR_TAG}`)
         if (authorTags.length > 0) {
@@ -486,7 +483,7 @@ ____   ___  ____   __  __ __  __   ___
      * ref: https://validator.w3.org/feed/docs/atom.html#text
      *  
      */
-    private static parseTextConstruct(element: Element | null): OptionalText {
+    private static parseTextConstruct(element: Element | null): OptionalString {
         if (!element) {
             return undefined;
         }
@@ -503,7 +500,7 @@ ____   ___  ____   __  __ __  __   ___
      * 
      * ref: https://validator.w3.org/feed/docs/atom.html#person
      */
-    private static parsePersonConstruct(element: Element | null): OptionalPerson {
+    private static parsePersonConstruct(element: Element | null): Optional<Person> {
         if (!element) {
             return undefined;
         }
@@ -523,7 +520,7 @@ ____   ___  ____   __  __ __  __   ___
      * 
      * ref: https://validator.w3.org/feed/docs/atom.html#link
      */
-    private static parseLinkConstruct(element: Element | null): OptionalLink {
+    private static parseLinkConstruct(element: Element | null): OptionalString {
         if (!element) {
             return undefined;
         }

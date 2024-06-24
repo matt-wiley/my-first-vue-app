@@ -1,12 +1,37 @@
 import { useUIStateStore } from "@/stores/ui";
+import { readFileSync } from "fs";
+import { vi } from "vitest";
 import SampleDataUtils from "./sampleDataUtils";
 import StringUtils from "./stringUtils";
 
 
-
 export default class TestUtils {
 
+  /**
+   *  Mocks the fetchFeed function to return the content of the XML file
+   * 
+   * @param targetUrl The URL to fetch
+   * @param mockDataPath The path to the XML file to return
+   */
+  static async mockFetchFeed(targetUrl: string, mockDataPath: string) {
+    vi.mock("src/services/feedFetchService", () => {
+      return {
+          fetchFeed: async (url: string) => {
+              if (url !== targetUrl) {
+                  throw new Error("Invalid URL");
+              }
+              const xmlContent = readFileSync(mockDataPath, "utf8");
+              return new DOMParser().parseFromString(xmlContent, "text/xml");
+          },
+      };
+  });
+  }
 
+  /**
+   * Generates a random URL for testing
+   * 
+   * @returns A random URL for testing
+   */
   static getFeedUrlForTest() {
     return "https://www.example.com/" + StringUtils.randomStringOfLength(20);
   }
@@ -67,5 +92,7 @@ export default class TestUtils {
       uiStateStore: uiStateStore
     }
   }
+
+  
 
 }

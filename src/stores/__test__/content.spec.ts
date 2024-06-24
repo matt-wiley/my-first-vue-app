@@ -1,11 +1,13 @@
+import Freshness from "@/models/freshness";
+import FeedParserService from "@/services/feedParserService";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
 import SampleDataUtils from "@/utils/sampleDataUtils";
 import TestUtils from "@/utils/testUtils";
 import { createPinia, setActivePinia } from "pinia";
 import { describe, expect, it } from "vitest";
-import { useLocalStorageContentStore } from "../localStorageContent";
 import { useInMemoryContentStore } from "../inMemoryContent";
-import Freshness from "@/models/freshness";
+import { useLocalStorageContentStore } from "../localStorageContent";
+import { CURRENT_CONTENT, LATEST_CONTENT } from "./data/content--update-source";
 
 /**
  * Test each of the content store implementations against the same suite to ensure
@@ -256,5 +258,13 @@ import Freshness from "@/models/freshness";
   
   });
 
+  it("updates a source", async () => {
+    const piniaForTest = setActivePinia(createPinia());
+    const contentStore = targetContentStore(piniaForTest);
+
+    const source = CURRENT_CONTENT
+    contentStore.addSource();
+
+  });
 
 });

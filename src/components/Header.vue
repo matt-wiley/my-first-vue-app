@@ -11,11 +11,19 @@ const buttonActions = [
         title: "Refresh",
         icon: "fas fa-rotate",
         action: () => {
+          console.log('refresh');
+          
+        }
+    },
+    {
+        title: "Load Sample Data",
+        icon: "fas fa-shuffle",
+        action: () => {
             uiState.setSelectedSourceId();
-            uiState.setSelectedArticleId();
+            uiState.setSelectedArticleId(); 
             SampleDataUtils.initSampleData(content);
         }
-    }
+    },
 ];
 
 

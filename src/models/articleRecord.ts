@@ -1,5 +1,5 @@
-import type Freshness from "./freshness";
-import type Article from "./article";
+import type Freshness from "@/models/freshness";
+import type Article from "@/models/article";
 
 /**
  * @description Represents an article record in the datastore.

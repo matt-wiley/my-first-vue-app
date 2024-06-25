@@ -53,7 +53,7 @@ export default class FeedParserService {
         const title = this.getTagContent(feed.documentElement, context.sourceTitleTag());
         const siteUrl = this.getTagContent(feed.documentElement, context.sourceSiteUrlTag());
         const description = this.getTagContent(feed.documentElement, context.sourceDescriptionTag());
-        return { title, url: siteUrl, description, feedUrl: "To be set last" };
+        return { title, url: siteUrl, description };
     }
 
     private parseArticles(feed: Document, context: ParsingContext): Article[] {

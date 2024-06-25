@@ -11,7 +11,6 @@ const buttonActions = [
         title: "Refresh",
         icon: "fas fa-rotate",
         action: () => {
-          console.log('refresh');
           
         }
     },

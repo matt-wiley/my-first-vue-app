@@ -8,7 +8,7 @@ import { defineStore } from "pinia";
 
 
 export const useInMemoryContentStore = defineStore({
-  id: "inMemorycontent",
+  id: "inMemoryContent",
 
   state: () => ({
     sources: [],

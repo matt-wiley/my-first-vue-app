@@ -1,5 +1,5 @@
-import type { OptionalString, Optional } from "../utils/optionalTypeUtils"; 
-import type { ParsedFeed } from "./feedParserService";
+import type { OptionalString, Optional } from "@/utils/optionalTypeUtils"; 
+import type { ParsedFeed } from "@/services/feedParserService";
 
 interface Person {
     name: OptionalString;

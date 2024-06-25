@@ -51,29 +51,30 @@ function clearOutput() {
 
 
 <template>
-  <div class="w-100">
-    <h3 class="modal-header mb3 br2 pv1 ph2">Parse Feed Data</h3>
+  <div class="bg-silver ma4 ">
+    <h3 class="modal-header mb3 br2 pv1 ph2 dark-gray">Parse Feed Data</h3>
       <textarea v-model="state.sourceXml" 
-        class="ba b--silver center pa2 br2 w-80" 
-        placeholder="Paste URL" />
+        class="ba b--silver center pa2 br2 w-100 h4" 
+        placeholder="Paste XML" />
       <div class="flex flex-row justify-start mh1 mt1">
         <ul class="list pa0">
           <li v-for="error in state.errors" :key="error" class="red ph2">{{ error }}</li>
         </ul>
       </div>
       <div class="flex flex-row justify-end mh1 mt3">
-        <button class="bn mr1 br2 pv2 ph3" title="Add Source" @click="parseSource()">
+        <button class="bn mr1 br2 pv2 ph3" title="Parse" @click="parseSource()">
           Parse
         </button>
-        <button class="bn mr1 br2 pv2 ph3" title="Add Source" @click="clearOutput()">
-          Clear
+        <button class="bn mr1 br2 pv2 ph3" title="Clear Output" @click="clearOutput()">
+          Clear Output
+        </button>
+        <button class="bn mr1 br2 pv2 ph3" title="Clear All" @click="resetState()">
+          Clear All
         </button>
       </div>
-      <div class="flex flex-row justify-end mh1 mt3">
-        <code>
+      <textarea class="mt3 h5 ba b--silver center pa2 br2 w-100 h5">
           {{ JSON.stringify(state.parseFeed, null, 2) }}
-        </code>  
-      </div>
+      </textarea>
   </div>
 </template>
 

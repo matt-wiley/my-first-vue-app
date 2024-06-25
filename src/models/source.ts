@@ -6,5 +6,5 @@ export default interface Source {
     title: string;
     feedUrl?: string;
     url: string;
-    description: string;
+    description?: string;
 }

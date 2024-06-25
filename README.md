@@ -5,7 +5,7 @@ Building an front-end-only RSS Reader with Vue.js (Vue 2)
 
 ## Project setup
 
-This project was created using the Vue CLI. To run this project, you need to have Node.js installed. 
+This project was created using the Vue CLI. To run this project, you need to have Node.js installed. Read about recommended installation methods for Node.js [here](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs).
 
 Versions used in development:
 - Node.js: `20.14.0`
@@ -31,8 +31,6 @@ This project was developed using Visual Studio Code. To debug the project, you c
 
 Create a `launch.json` file in the `.vscode/` folder with the following content:
 
-> If you already have a `launch.json` file, you can add the following configuration as a new element in the `configurations` array.
-
 ```json
 {
   "version": "0.2.0",
@@ -51,4 +49,4 @@ Create a `launch.json` file in the `.vscode/` folder with the following content:
   ]
 }
 ```
-
+> If you already have a `launch.json` file, you can add the following configuration as a new element in the `configurations` array.

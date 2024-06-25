@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { OptionalArray, OptionalString } from "@/utils/optionalTypeUtils";
-import { ValidationUtils as vu } from "@/utils/validationUtils";
+import ValidationUtils from "@/utils/validationUtils";
 import { reactive } from "vue";
 import FeedParserService from "@/services/feedParserService";
 import { useContentStore } from "@/stores/content";
 
+const vu = ValidationUtils;
 const feedParser = FeedParserService.getInstance();
 const content = useContentStore();
 

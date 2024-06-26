@@ -24,7 +24,7 @@ jobs:
 
       - name: Run tests
         run: |
-          npm run test:unit
+          npm run test:unit-cov
 
       - name: Test Report
         uses: dorny/test-reporter@v1

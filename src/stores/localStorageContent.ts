@@ -12,6 +12,8 @@ import { defineStore } from "pinia";
 type ContentEntries = { [key: string]: ContentEntry }
 type ContentEntry = SourceRecord | ArticleRecord;
 
+// TODO: Recreate as an implementation of ContentStoreInterface
+
 const _contentStoreDefinition = (() => {
 
   const KEY_SOURCE_IDS_LIST: string = "mfva-rss.content.sourceIdsList";

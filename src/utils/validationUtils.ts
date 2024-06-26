@@ -1,7 +1,7 @@
 /**
  * A utility class for validation.
  */
-export class ValidationUtils {
+export default class ValidationUtils {
 
 
   /**
@@ -21,6 +21,19 @@ export class ValidationUtils {
     } catch (e) {
       return false;
     }
+  }
+
+  /**
+   * Determines if a string is empty.
+   * 
+   * @param value The string to validate.
+   * @returns True if the string is empty, false otherwise.
+   */
+  static isEmptyString(value: string | null | undefined): boolean {
+    if (value === undefined) return true;
+    if (value === null) return true;
+    if (value === "") return true;
+    return false
   }
 
 }

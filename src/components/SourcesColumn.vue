@@ -2,18 +2,6 @@
 import SourcesList from './SourcesList.vue'
 import AddSourceButton from './AddSourceButton.vue'
 
-import { useContentStore } from '@/stores/content';
-import { useUIStateStore } from '@/stores/ui';
-
-const uiState = useUIStateStore();
-const content = useContentStore();
-
-
-function addSource() {
-    console.log('addSource');
-    // TODO: Implement addSource function
-}
-
 </script>
 
 <template>

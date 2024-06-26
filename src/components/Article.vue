@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import type ArticleEntity from "@/models/articleEntity";
 import type ArticleRecord from "@/models/articleRecord";
-import { useContentStore } from "@/stores/content";
+import { contentStore } from "@/stores/contentStore";
 import { useUIStateStore } from "@/stores/ui";
+import type { Maybe } from "@/types/maybe";
 import DateUtils from "@/utils/dateUtils";
 
 const uiState = useUIStateStore();
-const content = useContentStore();
+const content = contentStore
 
-function getSelectedArticle() {
-  return content.getArticle(uiState.getSelectedArticleId) as ArticleRecord | null;
+function getSelectedArticle(): Maybe<ArticleEntity> {
+  return content.getArticleById(uiState.getSelectedArticleId);
 }
 
 function presentDate(date: Date | null | undefined) {

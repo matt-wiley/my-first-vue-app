@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import type { OptionalArray, OptionalString } from "@/utils/optionalTypeUtils";
-import { ValidationUtils as vu } from "@/utils/validationUtils";
-import { reactive } from "vue";
+import type ArticleEntity from "@/models/articleEntity";
+import type SourceEntity from "@/models/sourceEntity";
 import FeedParserService from "@/services/feedParserService";
-import { useContentStore } from "@/stores/content";
+import { contentStore } from "@/stores/contentStore";
+import type { OptionalArray, OptionalString } from "@/utils/optionalTypeUtils";
+import ValidationUtils from "@/utils/validationUtils";
+import { reactive } from "vue";
 
+const vu = ValidationUtils;
 const feedParser = FeedParserService.getInstance();
-const content = useContentStore();
+const content = contentStore
 
 const state = reactive({
   // State Values
@@ -51,9 +54,10 @@ async function addNewSource() {
     try{
       const feedData = await feedParser.fetchAndParseFeed(state.sourceUrl);
       if (feedData !== null) {
-        const sourceRecord = await content.addSource(feedData.source);
-        for (const article of feedData.articles) {
-          content.addArticle(sourceRecord, article);
+        const sourceRecord = await content.addSource(feedData.source as SourceEntity);
+        for (const article of feedData.articles as ArticleEntity[]) {
+          article.sourceId = sourceRecord.id;
+          content.addArticle(article);
         }
         toggleAddSourceForm();
       }

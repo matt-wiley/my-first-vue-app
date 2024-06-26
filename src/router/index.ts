@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import DevToolsView from "../views/DevToolsView.vue";
+import ContentStoreView from "../views/ContentStoreView.vue";
 
 Vue.use(VueRouter);
 
@@ -10,9 +12,19 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
-      name: "home",
+      name: "AppView",
       component: HomeView,
     },
+    {
+      path: "/devtools",
+      name: "DevTools",
+      component: DevToolsView,
+    },
+    {
+      path: "/contentStore",
+      name: "ContentStore",
+      component: ContentStoreView
+    }
   ],
 });
 

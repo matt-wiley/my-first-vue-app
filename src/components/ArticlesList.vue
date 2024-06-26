@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type ArticleEntity from "@/models/articleEntity";
 import type ArticleRecord from "@/models/articleRecord";
-import { useContentStore } from "@/stores/content";
+import { contentStore } from "@/stores/contentStore";
 import { useUIStateStore } from '@/stores/ui';
-import Article from "./Article.vue";
+import type { Maybe } from "@/types/maybe";
 
 const uiState = useUIStateStore();
-const content = useContentStore();
+const content = contentStore
 
 
 /**
@@ -17,7 +18,7 @@ function getArticlesForSelectedSource(): ArticleRecord[] {
     if (uiState.getSelectedSourceId) {
         return content.getArticlesForSourceId(uiState.getSelectedSourceId);
     } else {
-        return content.getArticles;
+        return content.getAllArticles();
     }
 }
 
@@ -35,7 +36,7 @@ function hasArticles(): boolean {
  * 
  * @returns The list of articles to display, sorted by date descending
  */
-function getPresentableArticles(): ArticleRecord[] {
+function getPresentableArticles(): ArticleEntity[] {
     const _dateDescending = (a: ArticleRecord, b: ArticleRecord) => {
       const bTime = ( typeof b.date === 'string' ? new Date(b.date) : b.date ).getTime();
       const aTime = ( typeof a.date === 'string' ? new Date(a.date) : a.date ).getTime();
@@ -56,7 +57,7 @@ function getPresentableArticles(): ArticleRecord[] {
  * 
  * @param articleId The id of the article that was clicked
  */
-function handleClick(articleId: string | null) {
+function handleClick(articleId: Maybe<string>) {
     // If the article is not already selected, select it
     if (uiState.getSelectedArticleId !== articleId) {
         uiState.setSelectedArticleId(articleId);

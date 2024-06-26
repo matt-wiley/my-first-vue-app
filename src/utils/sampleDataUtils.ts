@@ -4,6 +4,8 @@ import type Source from "@/models/source";
 import { DateUtils as du } from "./dateUtils";
 import { NumberUtils as nu } from "./numberUtils";
 import { StringUtils as su } from "./stringUtils";
+import type ContentStoreInterface from "@/stores/contentStoreInterface";
+import type ArticleEntity from "@/models/articleEntity";
 
 
 
@@ -59,6 +61,13 @@ export default class SampleDataUtils {
         };
     }
 
+    /**
+     * @deprecated Use loadRandomContent instead
+     * 
+     * @param contentStore 
+     * @param maxSources 
+     * @param maxArticlesPerSource
+     */
     static async initSampleData(contentStore: any, maxSources = 10, maxArticlesPerSource = 10) {
       contentStore.sources = [];
       contentStore.articles = [];
@@ -79,5 +88,34 @@ export default class SampleDataUtils {
         }
       }
       console.log("Sample data loaded");
+    }
+
+    /**
+     * Load random content into an implementation of ContentStoreInterface.
+     * 
+     * @param contentStore An implementation of ContentStoreInterface
+     * @param maxSources 
+     * @param maxArticlesPerSource  
+     */
+    static async loadRandomContent(contentStore: ContentStoreInterface, maxSources = 10, maxArticlesPerSource = 10) {
+      contentStore.clearStore();
+
+      // Generate new sample data
+      for (let i = 0; i < maxSources; i++) {
+        // create new Source
+        const source = SampleDataUtils.generateSource();
+        // add SourceRecord to datastore, and get id
+        const sourceRecord = await contentStore.addSource(source);
+
+        const randomNumberOfArticles = nu.randomIntInRange(1, maxArticlesPerSource);
+        for (let j = 0; j < randomNumberOfArticles; j++) {
+          // create new Article
+          const article = SampleDataUtils.generateArticle() as Partial<ArticleEntity>;
+          // add ArticleRecord to datastore
+          article.sourceId = sourceRecord.id;
+          await contentStore.addArticle(article);
+        }
+      }
+      console.log("Random data loaded");
     }
 }

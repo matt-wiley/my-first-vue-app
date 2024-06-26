@@ -142,7 +142,7 @@ import InMemoryContentStore from "../inMemoryContentStore";
     });
 
     describe("updateSource()", () => {
-        
+
       it("updates a source", async () => {
         const source: Partial<SourceEntity> = {
           title: "title",
@@ -180,7 +180,7 @@ import InMemoryContentStore from "../inMemoryContentStore";
           expect(error.message).toBe("Source with id S-123 not found");
         }
       });
-  });
+    });
 
     describe("deleteSource()", () => {
 
@@ -286,8 +286,9 @@ import InMemoryContentStore from "../inMemoryContentStore";
         await storeUnderTest.addSource(source2);
         expect(await storeUnderTest.getSourcesCount()).toBe(2);
 
-        await storeUnderTest.deleteAllSources();
+        const deleteCount = await storeUnderTest.deleteAllSources();
         expect(await storeUnderTest.getSourcesCount()).toBe(0);
+        expect(deleteCount).toBe(2);
 
       });
 
@@ -479,57 +480,359 @@ import InMemoryContentStore from "../inMemoryContentStore";
     });
 
     describe("updateArticle()", () => {
-        
-        it("updates an article", async () => {
-          const source: Partial<SourceEntity> = {
-            title: "title",
-            description: "description",
-            feedUrl: "feedUrl",
-          };
-  
-          const addedSourceEntity = await storeUnderTest.addSource(source);
-  
-          const article: Partial<ArticleEntity> = {
-            sourceId: addedSourceEntity.id,
-            externalId: "externalId",
-            title: "title",
-            date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
-          };
 
-          const addedArticleEntity = await storeUnderTest.addArticle(article);
+      it("updates an article", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        const addedArticleEntity = await storeUnderTest.addArticle(article);
+        await storeUnderTest.updateArticle({
+          ...addedArticleEntity,
+          title: "updated title",
+        });
+
+        const foundArticleEntity = await storeUnderTest.getArticleById(addedArticleEntity.id);
+        expect(foundArticleEntity).toBeDefined();
+        expect(foundArticleEntity?.id).toBe(addedArticleEntity.id);
+        expect(foundArticleEntity?.sourceId).toBe(addedSourceEntity.id);
+        expect(foundArticleEntity?.externalId).toBe("externalId");
+        expect(foundArticleEntity?.title).toBe("updated title");
+        expect(foundArticleEntity?.date).toBe(article.date);
+        expect(foundArticleEntity?.author).toBeUndefined();
+        expect(foundArticleEntity?.link).toBeUndefined();
+        expect(foundArticleEntity?.content).toBeUndefined();
+
+      });
+
+      it("throws an error when updating an article that does not exist", async () => {
+        try {
           await storeUnderTest.updateArticle({
-            ...addedArticleEntity,
+            id: "A-123",
+            sourceId: "S-123",
+            externalId: "externalId",
             title: "updated title",
+            date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
           });
+          expect(true).toBe(false); // Should not reach this line
+        }
+        catch (error: any) {
+          expect(error.message).toBe("Article with id A-123 not found");
+        }
+      });
 
-          const foundArticleEntity = await storeUnderTest.getArticleById(addedArticleEntity.id);
-          expect(foundArticleEntity).toBeDefined();
-          expect(foundArticleEntity?.id).toBe(addedArticleEntity.id);
-          expect(foundArticleEntity?.sourceId).toBe(addedSourceEntity.id);
-          expect(foundArticleEntity?.externalId).toBe("externalId");
-          expect(foundArticleEntity?.title).toBe("updated title");
-          expect(foundArticleEntity?.date).toBe(article.date);
-          expect(foundArticleEntity?.author).toBeUndefined();
-          expect(foundArticleEntity?.link).toBeUndefined();
-          expect(foundArticleEntity?.content).toBeUndefined();
+    });
 
-        });
+    describe("deleteArticle()", () => {
 
-        it("throws an error when updating an article that does not exist", async () => {
-          try {
-            await storeUnderTest.updateArticle({
-              id: "A-123",
-              sourceId: "S-123",
-              externalId: "externalId",
-              title: "updated title",
-              date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
-            });
-            expect(true).toBe(false); // Should not reach this line
-          }
-          catch (error: any) {
-            expect(error.message).toBe("Article with id A-123 not found");
-          }
-        });
+      it("deletes an article", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        const addedArticleEntity1 = await storeUnderTest.addArticle(article1);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        const addedArticleEntity2 = await storeUnderTest.addArticle(article2);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(2);
+
+        await storeUnderTest.deleteArticle(addedArticleEntity1.id);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(1);
+
+        await storeUnderTest.deleteArticle(addedArticleEntity2.id);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(0);
+
+      });
+
+      it("throws an error when deleting an article that does not exist", async () => {
+        try {
+          await storeUnderTest.deleteArticle("A-123");
+          expect(true).toBe(false); // Should not reach this line
+        }
+        catch (error: any) {
+          expect(error.message).toBe("Article with id A-123 not found");
+        }
+      });
+
+    });
+
+    describe("getAllArticles()", () => {
+
+      it("gets all articles", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        const addedArticleEntity1 = await storeUnderTest.addArticle(article1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        const addedArticleEntity2 = await storeUnderTest.addArticle(article2);
+
+        const allArticles = storeUnderTest.getAllArticles();
+        expect(allArticles.length).toBe(2);
+        expect(allArticles).toContain(addedArticleEntity1);
+        expect(allArticles).toContain(addedArticleEntity2);
+
+      });
+
+      it("returns an empty array when there are no articles", async () => {
+        const allArticles = storeUnderTest.getAllArticles();
+        expect(allArticles.length).toBe(0);
+      });
+
+    });
+
+    describe("getAllArticlesCount()", () => {
+
+      it("returns the correct number of total articles", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        await storeUnderTest.addArticle(article1);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        await storeUnderTest.addArticle(article2);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(2);
+
+      });
+
+    });
+
+    describe("deleteAllArticles()", () => {
+
+      it("deletes all articles", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        await storeUnderTest.addArticle(article1);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        await storeUnderTest.addArticle(article2);
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(2);
+
+        const deleteCount = await storeUnderTest.deleteAllArticles();
+        expect(await storeUnderTest.getAllArticlesCount()).toBe(0);
+        expect(deleteCount).toBe(2);
+
+      });
+
+    });
+
+    describe("getArticlesForSourceId()", () => {
+
+      it("gets all articles for a source", async () => {
+        const source1: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl1",
+        };
+        const addedSourceEntity1 = await storeUnderTest.addSource(source1);
+
+        const source2: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl2",
+        };
+        const addedSourceEntity2 = await storeUnderTest.addSource(source2);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity1.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        const addedArticleEntity1 = await storeUnderTest.addArticle(article1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity1.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        const addedArticleEntity2 = await storeUnderTest.addArticle(article2);
+
+        const article3: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity2.id,
+          externalId: "externalId3",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        const addedArticleEntity3 = await storeUnderTest.addArticle(article3);
+
+        const articlesForSource1 = await storeUnderTest.getArticlesForSourceId(addedSourceEntity1.id);
+        expect(articlesForSource1.length).toBe(2);
+        expect(articlesForSource1).toContain(addedArticleEntity1);
+        expect(articlesForSource1).toContain(addedArticleEntity2);
+
+        const articlesForSource2 = await storeUnderTest.getArticlesForSourceId(addedSourceEntity2.id);
+        expect(articlesForSource2.length).toBe(1);
+        expect(articlesForSource2).toContain(addedArticleEntity3);
+
+      });
+
+      it("returns an empty array when there are no articles for a source", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const articlesForSource = await storeUnderTest.getArticlesForSourceId(addedSourceEntity.id);
+        expect(articlesForSource.length).toBe(0);
+      });
+
+      it("returns an empty array when the source does not exist", async () => {
+        const articlesForSource = await storeUnderTest.getArticlesForSourceId("S-123");
+        expect(articlesForSource.length).toBe(0);
+      });
+
+    });
+
+    describe("getArticlesCountForSourceId()", () => {
+
+      it("returns the correct number of articles for a source", async () => {
+        const source1: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl1",
+        };
+        const addedSourceEntity1 = await storeUnderTest.addSource(source1);
+
+        const source2: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl2",
+        };
+        const addedSourceEntity2 = await storeUnderTest.addSource(source2);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity1.id,
+          externalId: "externalId1",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        await storeUnderTest.addArticle(article1);
+
+        const article2: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity1.id,
+          externalId: "externalId2",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        await storeUnderTest.addArticle(article2);
+
+        const article3: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity2.id,
+          externalId: "externalId3",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+        await storeUnderTest.addArticle(article3);
+
+        expect(await storeUnderTest.getArticlesCountForSourceId(addedSourceEntity1.id)).toBe(2);
+        expect(await storeUnderTest.getArticlesCountForSourceId(addedSourceEntity2.id)).toBe(1);
+
+      });
+
+      it("returns 0 when there are no articles for a source", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        expect(await storeUnderTest.getArticlesCountForSourceId(addedSourceEntity.id)).toBe(0);
+      });
+
+      it("returns 0 when the source does not exist", async () => {
+        expect(await storeUnderTest.getArticlesCountForSourceId("S-123")).toBe(0);
+      });
 
     });
 

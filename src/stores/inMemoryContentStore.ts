@@ -15,7 +15,7 @@ class ContentStoreUtils {
     if (ValidationUtils.isEmptyString(source.feedUrl)) {
       throw new Error("source.feedUrl cannot be null or undefined");
     }
-    return `S-${await HashUtils.digest(HashAlgo.SHA1, source.feedUrl! )}`
+    return `S-${await HashUtils.digest(HashAlgo.SHA1, source.feedUrl!)}`
   }
 
 
@@ -42,12 +42,24 @@ const useInMemoryContentStore = defineStore({
     articles: [],
   }),
   getters: {
+    /// ============================================================================================
+    ///
+    /// Accessors for SourceEntity
+    ///
     getAllSources: (state) => state.sources,
     getSourceById: (state) => (id: string) => state.sources.find((source: SourceEntity) => source.id === id),
     getSourcesCount: (state) => state.sources.length,
     findSourceWithFeedUrl: (state) => (feedUrl: string) => state.sources.find((source: SourceEntity) => source.feedUrl === feedUrl),
+
+    /// ============================================================================================
+    ///
+    /// Accessors for ArticleEntity
+    ///
     getAllArticles: (state) => state.articles,
+    getAllArticlesCount: (state) => state.articles.length,
     getArticleById: (state) => (id: string) => state.articles.find((article: ArticleEntity) => article.id === id),
+    getArticlesForSourceId: (state) => (sourceId: string) => state.articles.filter((article: ArticleEntity) => article.sourceId === sourceId),
+    getArticlesCountForSourceId: (state) => (sourceId: string) => state.articles.filter((article: ArticleEntity) => article.sourceId === sourceId).length,
   },
   actions: {
     /// ===========================================================================================
@@ -76,7 +88,7 @@ const useInMemoryContentStore = defineStore({
         throw new Error("source.id cannot be null or undefined");
       }
       const existingSource = this.getSourceById(source.id!);
-      if(!existingSource) {
+      if (!existingSource) {
         throw new Error(`Source with id ${source.id} not found`);
       }
       Object.assign(existingSource, source);
@@ -84,14 +96,13 @@ const useInMemoryContentStore = defineStore({
     },
     deleteSource(id: string) {
       const existingSource = this.getSourceById(id)
-      if(!existingSource) {
+      if (!existingSource) {
         throw new Error(`Source with id ${id} not found`)
       }
       this.sources = this.sources.filter((source: SourceEntity) => source.id !== id);
     },
     deleteAllSources() {
       this.sources = [];
-      return this.sources.length;
     },
 
     /// ===========================================================================================
@@ -123,11 +134,21 @@ const useInMemoryContentStore = defineStore({
         throw new Error("article.id cannot be null or undefined");
       }
       const existingArticle = this.getArticleById(article.id!);
-      if(!existingArticle) {
+      if (!existingArticle) {
         throw new Error(`Article with id ${article.id} not found`);
       }
       Object.assign(existingArticle, article);
       return existingArticle;
+    },
+    deleteArticle(id: string) {
+      const existingArticle = this.getArticleById(id)
+      if (!existingArticle) {
+        throw new Error(`Article with id ${id} not found`)
+      }
+      this.articles = this.articles.filter((article: ArticleEntity) => article.id !== id);
+    },
+    deleteAllArticles() {
+      this.articles = [];
     },
 
 
@@ -139,7 +160,8 @@ const useInMemoryContentStore = defineStore({
       this.deleteAllSources()
       this.articles = [];
     }
-  },});
+  },
+});
 
 
 export default class InMemoryContentStore implements ContentStoreInterface {
@@ -150,7 +172,7 @@ export default class InMemoryContentStore implements ContentStoreInterface {
   private constructor() {
     this.piniaContentStore = useInMemoryContentStore;
   }
-  
+
   public static getInstance(): InMemoryContentStore {
     if (!InMemoryContentStore.INSTANCE) {
       InMemoryContentStore.INSTANCE = new InMemoryContentStore();
@@ -196,7 +218,9 @@ export default class InMemoryContentStore implements ContentStoreInterface {
     return Promise.resolve(this.getReactiveContentStore().getSourcesCount);
   }
   deleteAllSources(): Promise<number> {
-    return Promise.resolve(this.getReactiveContentStore().deleteAllSources());
+    const count = this.getReactiveContentStore().getSourcesCount;
+    this.getReactiveContentStore().deleteAllSources();
+    return Promise.resolve(count);
   }
 
   //
@@ -213,23 +237,24 @@ export default class InMemoryContentStore implements ContentStoreInterface {
     return Promise.resolve(this.getReactiveContentStore().updateArticle(article));
   }
   deleteArticle(id: string): Promise<void> {
-    // TODO: // YAH // Implement deleteArticle 
-    throw new Error("Method not implemented.");
+    return Promise.resolve(this.getReactiveContentStore().deleteArticle(id));
   }
   getAllArticles(): ArticleEntity[] {
     return this.getReactiveContentStore().getAllArticles;
   }
   getAllArticlesCount(): Promise<number> {
-    throw new Error("Method not implemented.");
+    return Promise.resolve(this.getReactiveContentStore().getAllArticlesCount);
   }
   deleteAllArticles(): Promise<number> {
-    throw new Error("Method not implemented.");
+    const count = this.getReactiveContentStore().getAllArticlesCount;
+    this.getReactiveContentStore().deleteAllArticles();
+    return Promise.resolve(count);
   }
   getArticlesForSourceId(sourceId: string): Promise<ArticleEntity[]> {
-    throw new Error("Method not implemented.");
+    return Promise.resolve(this.getReactiveContentStore().getArticlesForSourceId(sourceId));
   }
   getArticlesCountForSourceId(sourceId: string): Promise<number> {
-    throw new Error("Method not implemented.");
+    return Promise.resolve(this.getReactiveContentStore().getArticlesCountForSourceId(sourceId));
   }
 
   //

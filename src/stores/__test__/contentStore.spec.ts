@@ -1,14 +1,16 @@
 
 import type ArticleEntity from "@/models/articleEntity";
+import Freshness from "@/models/freshness";
 import type SourceEntity from "@/models/sourceEntity";
 import DateUtils from "@/utils/dateUtils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it } from "vitest";
 import InMemoryContentStore from "../inMemoryContentStore";
 
-
 [
-  InMemoryContentStore
+  InMemoryContentStore,
+  // LocalStorageContentStore,
+  // IndexedDbContentStore,
 ].forEach(contentStore => {
 
   setActivePinia(createPinia()); // Initialize the underlying store before test suite setup
@@ -330,6 +332,7 @@ import InMemoryContentStore from "../inMemoryContentStore";
         expect(addedArticleEntity.author).toBe("author");
         expect(addedArticleEntity.link).toBe("link");
         expect(addedArticleEntity.content).toBe("content");
+        expect(addedArticleEntity.freshness).toBe(Freshness.New);
 
 
         // Verify that the store has the expected values
@@ -444,6 +447,62 @@ import InMemoryContentStore from "../inMemoryContentStore";
         catch (error: any) {
           expect(error.message).toBe("article.externalId or article.title must be set");
         }
+      });
+
+      it("throws an error when adding an article with an externalId and title that are empty strings", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "",
+          title: "",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        try {
+          await storeUnderTest.addArticle(article);
+          expect(true).toBe(false); // Should not reach this line
+        }
+        catch (error: any) {
+          expect(error.message).toBe("article.externalId or article.title must be set");
+        }
+
+      });
+
+      it("throws an error when there is a collision on calculated id (SHA1)", async () => {
+        const source: Partial<SourceEntity> = {
+          title: "title",
+          description: "description",
+          feedUrl: "feedUrl",
+        };
+
+        const addedSourceEntity = await storeUnderTest.addSource(source);
+
+        const article1: Partial<ArticleEntity> = {
+          sourceId: addedSourceEntity.id,
+          externalId: "externalId",
+          title: "title",
+          date: DateUtils.randomDate(new Date("01/01/2024"), new Date()),
+        };
+
+        await storeUnderTest.addArticle(article1);
+
+        const article2: Partial<ArticleEntity> = { ... article1 };
+
+        try {
+          await storeUnderTest.addArticle(article2);
+          expect(true).toBe(false); // Should not reach this line
+        }
+        catch (error: any) {
+          expect(error.message).toBe("Collision on calculated article id (SHA1)");
+        }
+
       });
 
     });

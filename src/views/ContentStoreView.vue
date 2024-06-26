@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type ArticleEntity from '@/models/articleEntity';
+import Freshness from '@/models/freshness';
 import type SourceEntity from '@/models/sourceEntity';
 import InMemoryContentStore from '@/stores/inMemoryContentStore';
 import type { Maybe } from '@/types/maybe';
@@ -44,7 +46,9 @@ const articleEntityToAdd = reactive({
   date: undefined,
   author: undefined,
   link: undefined,
-  content: undefined
+  content: undefined,
+  freshness: Freshness.New,
+  isTombstoned: false
 } as {
   sourceId: Maybe<string>;
   id: Maybe<string>;
@@ -54,10 +58,14 @@ const articleEntityToAdd = reactive({
   author: Maybe<string>;
   link: Maybe<string>;
   content: Maybe<string>;
+  freshness: Freshness;
+  isTombstoned: boolean;
 })
 
 
-async function addNewSource() {
+
+
+async function addSource() {
   const addedSource = await contentStoreWrapper.addSource({
     id: sourceEntityToAdd.id,
     title: sourceEntityToAdd.title,
@@ -84,8 +92,32 @@ function clearSourceEntityToAdd() {
   sourceEntityToAdd.description = undefined
 }
 
-async function addNewArticle() {
-  // TODO: Implement adding article
+function attempt(operation: () => any){
+  try {
+    operation()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function addArticle() {
+    const addedArticle = await contentStoreWrapper.addArticle({
+      sourceId: articleEntityToAdd.sourceId,
+      id: articleEntityToAdd.id,
+      externalId: articleEntityToAdd.externalId,
+      title: articleEntityToAdd.title,
+      date: articleEntityToAdd.date,
+    } as ArticleEntity);
+    articleEntityToAdd.id = addedArticle.id
+}
+
+async function updateArticle() {
+  const updatedArticle = await contentStoreWrapper.updateArticle({
+    sourceId: articleEntityToAdd.sourceId,
+    externalId: articleEntityToAdd.externalId,
+    title: articleEntityToAdd.title,
+    date: articleEntityToAdd.date,
+  } as ArticleEntity);
 }
 
 
@@ -134,7 +166,7 @@ function clearArticleEntityToAdd() {
           placeholder="sourceEntity.description" />
         <div class="flex flex-row justify-end mt3">
           <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Get</button>
-          <button class="pointer bn br2 pv2 w-20 mr1" @click="addNewSource()">Add</button>
+          <button class="pointer bn br2 pv2 w-20 mr1" @click="attempt(addSource)">Add</button>
           <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Update</button>
           <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Delete</button>
         </div>
@@ -153,10 +185,20 @@ function clearArticleEntityToAdd() {
         <input class="w-100 bn br2 pa1 mb2" v-model="articleEntityToAdd.author" placeholder="articleEntity.author" />
         <input class="w-100 bn br2 pa1 mb2" v-model="articleEntityToAdd.link" placeholder="articleEntity.link" />
         <input class="w-100 bn br2 pa1 mb2" v-model="articleEntityToAdd.content" placeholder="articleEntity.content" />
+        <select class="w-100 bn br2 pa1 mb2" v-model="articleEntityToAdd.freshness">
+          <option value="New">New</option>
+          <option value="Current">Current</option>
+          <option value="Stale">Stale</option>
+        </select>
+        <div class="w-100 bn br2 pa1 mb2">
+          <input name="tombstone" type="checkbox" class="dib bn br2" v-model="articleEntityToAdd.isTombstoned" />
+          <label for="tombstone" class="dib ml2 dark-gray">Tombstone</label>
+        </div>
+
         <div class="flex flex-row justify-end mt3">
           <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Get</button>
-          <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Add</button>
-          <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Update</button>
+          <button class="pointer bn br2 pv2 w-20 mr1" @click="attempt(addArticle)">Add</button>
+          <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="updateArticle()">Update</button>
           <button class="pointer bn br2 pv2 w-20 mr1" disabled @click="">Delete</button>
         </div>
       </div>

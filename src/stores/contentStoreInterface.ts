@@ -28,9 +28,5 @@ export default interface ContentStoreInterface {
   deleteAllArticles(): Promise<number>; // returns the number of articles deleted
   getArticlesForSourceId(sourceId: string): Promise<ArticleEntity[]>;
   getArticlesCountForSourceId(sourceId: string): Promise<number>; // returns the number of articles for the source for the given sourceId
-  
-  // Refresh API
-  refreshSource(sourceId: string): Promise<number>; // returns the number of articles added
-  refreshAllSources(): Promise<number>; // returns the number of articles added
 
 }

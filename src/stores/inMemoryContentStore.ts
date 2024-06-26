@@ -1,10 +1,10 @@
 import type ArticleEntity from "@/models/articleEntity";
+import Freshness from "@/models/freshness";
 import type SourceEntity from "@/models/sourceEntity";
 import type ContentStoreInterface from "@/stores/contentStoreInterface";
 import type { Maybe } from "@/types/maybe";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
 import ValidationUtils from "@/utils/validationUtils";
-import { get } from "http";
 import { defineStore } from "pinia";
 
 
@@ -110,7 +110,6 @@ const useInMemoryContentStore = defineStore({
     ///   Mutators for ArticleEntity
     ///
     async addArticle(article: Partial<ArticleEntity>) {
-
       if (ValidationUtils.isEmptyString(article.sourceId)) {
         throw new Error("article.sourceId cannot be null or undefined");
       }
@@ -121,8 +120,13 @@ const useInMemoryContentStore = defineStore({
 
       const { sha, id } = await ContentStoreUtils.generateArticleShaAndId(article);
 
+      if (this.getArticleById(id)) {
+        throw new Error("Collision on calculated article id (SHA1)");
+      }
+
       article.id = id;
       article.sha = sha;
+      article.freshness = Freshness.New;
 
       // @ts-ignore: This expression is not callable. Type 'never[]' has no call signatures. ts(2349)
       this.articles.push(article);
@@ -150,7 +154,6 @@ const useInMemoryContentStore = defineStore({
     deleteAllArticles() {
       this.articles = [];
     },
-
 
     /// ===========================================================================================
     ///
@@ -257,14 +260,4 @@ export default class InMemoryContentStore implements ContentStoreInterface {
     return Promise.resolve(this.getReactiveContentStore().getArticlesCountForSourceId(sourceId));
   }
 
-  //
-  // Refresh API
-  //
-
-  refreshSource(sourceId: string): Promise<number> {
-    throw new Error("Method not implemented.");
-  }
-  refreshAllSources(): Promise<number> {
-    throw new Error("Method not implemented.");
-  }
 }

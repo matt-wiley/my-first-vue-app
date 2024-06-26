@@ -333,6 +333,7 @@ import InMemoryContentStore from "../inMemoryContentStore";
         expect(addedArticleEntity.link).toBe("link");
         expect(addedArticleEntity.content).toBe("content");
         expect(addedArticleEntity.freshness).toBe(Freshness.New);
+        expect(addedArticleEntity.isTombstoned).toBe(false);
 
 
         // Verify that the store has the expected values
@@ -367,6 +368,8 @@ import InMemoryContentStore from "../inMemoryContentStore";
         expect(addedArticleEntity.author).toBeUndefined();
         expect(addedArticleEntity.link).toBeUndefined();
         expect(addedArticleEntity.content).toBeUndefined();
+        expect(addedArticleEntity.freshness).toBe(Freshness.New);
+        expect(addedArticleEntity.isTombstoned).toBe(false);
 
         // Verify that the store has the expected values
         expect(storeUnderTest.getAllArticles().length).toBe(1);
@@ -401,6 +404,8 @@ import InMemoryContentStore from "../inMemoryContentStore";
         expect(addedArticleEntity.author).toBeUndefined();
         expect(addedArticleEntity.link).toBeUndefined();
         expect(addedArticleEntity.content).toBeUndefined(); // TODO: Should this be required?
+        expect(addedArticleEntity.freshness).toBe(Freshness.New);
+        expect(addedArticleEntity.isTombstoned).toBe(false);
 
         // Verify that the store has the expected values
         expect(storeUnderTest.getAllArticles().length).toBe(1);

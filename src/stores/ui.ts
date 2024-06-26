@@ -1,7 +1,8 @@
+import type { Maybe } from "@/types/maybe";
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core"
 
-type OptionalString = string | undefined
+
 
 const _uiStateStoreDefinition = (() => {
 
@@ -19,8 +20,8 @@ const _uiStateStoreDefinition = (() => {
         },
 
         state: () => ({
-            selectedSourceId: useLocalStorage<OptionalString>(KEY_SELECTED_SOURCE_ID, undefined),
-            selectedArticleId: useLocalStorage<OptionalString>(KEY_SELECTED_ARTICLE_ID, undefined),
+            selectedSourceId: useLocalStorage<Maybe<string>>(KEY_SELECTED_SOURCE_ID, undefined),
+            selectedArticleId: useLocalStorage<Maybe<string>>(KEY_SELECTED_ARTICLE_ID, undefined),
         }),
     
         getters: {
@@ -29,10 +30,10 @@ const _uiStateStoreDefinition = (() => {
         },
     
         actions: {
-            setSelectedSourceId(sourceId?: string) {
+            setSelectedSourceId(sourceId: Maybe<string>) {
                 this.selectedSourceId = sourceId;
             },
-            setSelectedArticleId(articleId?: string) {
+            setSelectedArticleId(articleId: Maybe<string>) {
                 this.selectedArticleId = articleId;
             },
         },

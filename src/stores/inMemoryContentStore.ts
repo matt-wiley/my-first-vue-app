@@ -127,6 +127,7 @@ const useInMemoryContentStore = defineStore({
       article.id = id;
       article.sha = sha;
       article.freshness = Freshness.New;
+      article.isTombstoned = false;
 
       // @ts-ignore: This expression is not callable. Type 'never[]' has no call signatures. ts(2349)
       this.articles.push(article);
@@ -217,8 +218,8 @@ export default class InMemoryContentStore implements ContentStoreInterface {
     // @ts-ignore: This expression is not callable. Type 'never[]' has no call signatures. ts(2349)
     return this.getReactiveContentStore().getAllSources
   }
-  getSourcesCount(): Promise<number> {
-    return Promise.resolve(this.getReactiveContentStore().getSourcesCount);
+  getSourcesCount(): number {
+    return this.getReactiveContentStore().getSourcesCount;
   }
   deleteAllSources(): Promise<number> {
     const count = this.getReactiveContentStore().getSourcesCount;
@@ -233,8 +234,11 @@ export default class InMemoryContentStore implements ContentStoreInterface {
   addArticle(article: Partial<ArticleEntity>): Promise<ArticleEntity> {
     return Promise.resolve(this.getReactiveContentStore().addArticle(article));
   }
-  getArticleById(id: string): Promise<Maybe<ArticleEntity>> {
-    return Promise.resolve(this.getReactiveContentStore().getArticleById(id));
+  getArticleById(id: Maybe<string>): Maybe<ArticleEntity> {
+    if (!id) {
+      return undefined;
+    }
+    return this.getReactiveContentStore().getArticleById(id);
   }
   updateArticle(article: Partial<ArticleEntity>): Promise<ArticleEntity> {
     return Promise.resolve(this.getReactiveContentStore().updateArticle(article));
@@ -245,16 +249,16 @@ export default class InMemoryContentStore implements ContentStoreInterface {
   getAllArticles(): ArticleEntity[] {
     return this.getReactiveContentStore().getAllArticles;
   }
-  getAllArticlesCount(): Promise<number> {
-    return Promise.resolve(this.getReactiveContentStore().getAllArticlesCount);
+  getAllArticlesCount(): number {
+    return this.getReactiveContentStore().getAllArticlesCount;
   }
   deleteAllArticles(): Promise<number> {
     const count = this.getReactiveContentStore().getAllArticlesCount;
     this.getReactiveContentStore().deleteAllArticles();
     return Promise.resolve(count);
   }
-  getArticlesForSourceId(sourceId: string): Promise<ArticleEntity[]> {
-    return Promise.resolve(this.getReactiveContentStore().getArticlesForSourceId(sourceId));
+  getArticlesForSourceId(sourceId: string): ArticleEntity[] {
+    return this.getReactiveContentStore().getArticlesForSourceId(sourceId);
   }
   getArticlesCountForSourceId(sourceId: string): Promise<number> {
     return Promise.resolve(this.getReactiveContentStore().getArticlesCountForSourceId(sourceId));

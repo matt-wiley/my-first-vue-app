@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useContentStore } from '@/stores/content';
+// import { useContentStore } from '@/stores/content';
+import { contentStore } from '@/stores/contentStore';
 import { useUIStateStore } from '@/stores/ui';
 import SampleDataUtils from '@/utils/sampleDataUtils';
 
 const uiState = useUIStateStore();
-const content = useContentStore();
+const content = contentStore
 
 const buttonActions = [
     {
@@ -20,7 +21,7 @@ const buttonActions = [
         action: () => {
             uiState.setSelectedSourceId();
             uiState.setSelectedArticleId(); 
-            SampleDataUtils.initSampleData(content);
+            SampleDataUtils.loadRandomContent(content);
         }
     },
 ];

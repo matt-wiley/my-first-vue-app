@@ -107,6 +107,7 @@ async function addArticle() {
       externalId: articleEntityToAdd.externalId,
       title: articleEntityToAdd.title,
       date: articleEntityToAdd.date,
+      content: articleEntityToAdd.content,
     } as ArticleEntity);
     articleEntityToAdd.id = addedArticle.id
 }

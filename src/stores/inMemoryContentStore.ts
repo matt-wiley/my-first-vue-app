@@ -4,6 +4,7 @@ import type ContentStoreInterface from "@/stores/contentStoreInterface";
 import type { Maybe } from "@/types/maybe";
 import HashUtils, { HashAlgo } from "@/utils/hashUtils";
 import ValidationUtils from "@/utils/validationUtils";
+import { get } from "http";
 import { defineStore } from "pinia";
 
 
@@ -46,6 +47,7 @@ const useInMemoryContentStore = defineStore({
     getSourcesCount: (state) => state.sources.length,
     findSourceWithFeedUrl: (state) => (feedUrl: string) => state.sources.find((source: SourceEntity) => source.feedUrl === feedUrl),
     getAllArticles: (state) => state.articles,
+    getArticleById: (state) => (id: string) => state.articles.find((article: ArticleEntity) => article.id === id),
   },
   actions: {
     /// ===========================================================================================
@@ -53,15 +55,12 @@ const useInMemoryContentStore = defineStore({
     ///   Mutators for SourceEntity
     ///
     async addSource(source: Partial<SourceEntity>) {
-
       if (ValidationUtils.isEmptyString(source.title)) {
         throw new Error("source.title cannot be null or undefined");
       }
-
       if (ValidationUtils.isEmptyString(source.feedUrl)) {
         throw new Error("source.feedUrl cannot be null or undefined");
       }
-
       if (this.findSourceWithFeedUrl(source.feedUrl!)) {
         throw new Error("source.feedUrl must be unique");
       }
@@ -71,6 +70,17 @@ const useInMemoryContentStore = defineStore({
       // @ts-ignore: This expression is not callable. Type 'never[]' has no call signatures. ts(2349)
       this.sources.push(source);
       return source as SourceEntity
+    },
+    updateSource(source: Partial<SourceEntity>) {
+      if (ValidationUtils.isEmptyString(source.id)) {
+        throw new Error("source.id cannot be null or undefined");
+      }
+      const existingSource = this.getSourceById(source.id!);
+      if(!existingSource) {
+        throw new Error(`Source with id ${source.id} not found`);
+      }
+      Object.assign(existingSource, source);
+      return existingSource;
     },
     deleteSource(id: string) {
       const existingSource = this.getSourceById(id)
@@ -107,6 +117,18 @@ const useInMemoryContentStore = defineStore({
       this.articles.push(article);
       return article as ArticleEntity;
     },
+    updateArticle(article: Partial<ArticleEntity>) {
+      // TODO: updateArticle may need some more restrictions around what can be updated
+      if (ValidationUtils.isEmptyString(article.id)) {
+        throw new Error("article.id cannot be null or undefined");
+      }
+      const existingArticle = this.getArticleById(article.id!);
+      if(!existingArticle) {
+        throw new Error(`Article with id ${article.id} not found`);
+      }
+      Object.assign(existingArticle, article);
+      return existingArticle;
+    },
 
 
     /// ===========================================================================================
@@ -136,18 +158,36 @@ export default class InMemoryContentStore implements ContentStoreInterface {
     return InMemoryContentStore.INSTANCE;
   }
 
+  // 
+  // Store API
+  //
+
   getReactiveContentStore(): any {
     return this.piniaContentStore();
   }
-
   getStoreId(): string {
     return this.piniaContentStore().$id;
   }
-
   clearStore(): void {
     this.getReactiveContentStore().clearStore();
   }
 
+  //
+  // Sources API
+  //
+
+  addSource(source: Partial<SourceEntity>): Promise<SourceEntity> {
+    return Promise.resolve(this.getReactiveContentStore().addSource(source));
+  }
+  getSourceById(id: string): Promise<Maybe<SourceEntity>> {
+    return Promise.resolve(this.getReactiveContentStore().getSourceById(id));
+  }
+  updateSource(source: Partial<SourceEntity>): Promise<SourceEntity> {
+    return Promise.resolve(this.getReactiveContentStore().updateSource(source));
+  }
+  deleteSource(id: string): Promise<void> {
+    return Promise.resolve(this.getReactiveContentStore().deleteSource(id));
+  }
   getAllSources(): SourceEntity[] {
     // @ts-ignore: This expression is not callable. Type 'never[]' has no call signatures. ts(2349)
     return this.getReactiveContentStore().getAllSources
@@ -155,41 +195,31 @@ export default class InMemoryContentStore implements ContentStoreInterface {
   getSourcesCount(): Promise<number> {
     return Promise.resolve(this.getReactiveContentStore().getSourcesCount);
   }
-  getSourceById(id: string): Promise<Maybe<SourceEntity>> {
-    return Promise.resolve(this.getReactiveContentStore().getSourceById(id));
-  }
-  addSource(source: Partial<SourceEntity>): Promise<SourceEntity> {
-    return Promise.resolve(this.getReactiveContentStore().addSource(source));
-  }
-  updateSource(source: SourceEntity): Promise<SourceEntity> {
-    // TODO: Implement updateSource
-    throw new Error("Method not implemented.");
-  }
-  deleteSource(id: string): Promise<void> {
-    return Promise.resolve(this.getReactiveContentStore().deleteSource(id));
-  }
   deleteAllSources(): Promise<number> {
     return Promise.resolve(this.getReactiveContentStore().deleteAllSources());
   }
 
+  //
+  // Articles API
+  //
 
-
+  addArticle(article: Partial<ArticleEntity>): Promise<ArticleEntity> {
+    return Promise.resolve(this.getReactiveContentStore().addArticle(article));
+  }
+  getArticleById(id: string): Promise<Maybe<ArticleEntity>> {
+    return Promise.resolve(this.getReactiveContentStore().getArticleById(id));
+  }
+  updateArticle(article: Partial<ArticleEntity>): Promise<ArticleEntity> {
+    return Promise.resolve(this.getReactiveContentStore().updateArticle(article));
+  }
+  deleteArticle(id: string): Promise<void> {
+    // TODO: // YAH // Implement deleteArticle 
+    throw new Error("Method not implemented.");
+  }
   getAllArticles(): ArticleEntity[] {
     return this.getReactiveContentStore().getAllArticles;
   }
   getAllArticlesCount(): Promise<number> {
-    throw new Error("Method not implemented.");
-  }
-  getArticleById(id: string): Promise<Maybe<ArticleEntity>> {
-    throw new Error("Method not implemented.");
-  }
-  addArticle(article: Partial<ArticleEntity>): Promise<ArticleEntity> {
-    return Promise.resolve(this.getReactiveContentStore().addArticle(article));
-  }
-  updateArticle(article: ArticleEntity): Promise<ArticleEntity> {
-    throw new Error("Method not implemented.");
-  }
-  deleteArticle(id: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
   deleteAllArticles(): Promise<number> {
@@ -201,6 +231,11 @@ export default class InMemoryContentStore implements ContentStoreInterface {
   getArticlesCountForSourceId(sourceId: string): Promise<number> {
     throw new Error("Method not implemented.");
   }
+
+  //
+  // Refresh API
+  //
+
   refreshSource(sourceId: string): Promise<number> {
     throw new Error("Method not implemented.");
   }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type ParsedFeed from '@/models/parsedFeed';
-import { useContentStore } from '@/stores/content';
+import { contentStore } from '@/stores/contentStore';
 import { reactive } from 'vue';
 
-const content = useContentStore();
+const content = contentStore
 
 const state = reactive({
   userProvidedFeedData: undefined,
@@ -17,22 +17,7 @@ const state = reactive({
 
 
 function refreshFeed() {
-
-  if (state.userProvidedFeedData === null || state.userProvidedFeedData === undefined) {
-    state.errors.push('No data provided for refresh');
-    return;
-  }
-
-  try {
-    const result = JSON.parse(state.userProvidedFeedData);
-    state.parsedFeedData = result;
-    console.dir(result)
-  }
-  catch (error: any) {
-    state.errors.push(error.message);
-  }
-
-  content.refreshFeed(state.parsedFeedData);
+  // TODO: Implement feed refresh in Dev Tools
 }
 
 </script>

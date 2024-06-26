@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useContentStore } from '@/stores/content';
+import { contentStore } from "./stores/contentStore";
 import { useUIStateStore } from "./stores/ui";
 import FeedFetchService from './services/feedFetchService';
 import FeedParserService from './services/feedParserService';
@@ -9,7 +9,7 @@ import router from './router';
 (() => {
   // Setup the global stores
   const uiState = useUIStateStore();
-  const content = useContentStore();
+  const content = contentStore.getReactiveContentStore();
 
   // TODO: Make this conditional on env variable
   // content.initSampleData(); 

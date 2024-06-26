@@ -6,6 +6,7 @@ import { NumberUtils as nu } from "./numberUtils";
 import { StringUtils as su } from "./stringUtils";
 import type ContentStoreInterface from "@/stores/contentStoreInterface";
 import type ArticleEntity from "@/models/articleEntity";
+import type SourceEntity from "@/models/sourceEntity";
 
 
 
@@ -35,7 +36,7 @@ export default class SampleDataUtils {
         }
     }
 
-    static generateSource(): Source {
+    static generateSource(): Partial<SourceEntity> {
         const randomString = su.randomStringOfLength(6);
         return {
             title: `Source ${randomString}`,
@@ -44,7 +45,7 @@ export default class SampleDataUtils {
         };
     }
 
-    static generateArticle(): Article {
+    static generateArticle(): Partial<ArticleEntity> {
         const randomArticleSlug = su.randomStringOfLength(6);
         const randomAuthor = `${su.randomStringOfLength(6)} ${su.randomStringOfLength(6)}`;
         const randomNumberOfContentWords = nu.randomIntInRange(20, 100);
